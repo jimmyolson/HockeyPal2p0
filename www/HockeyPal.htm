@@ -1,0 +1,840 @@
+﻿<!DOCTYPE HTML>
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<meta http-equiv="x-ua-compatible" content="ie=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0" />
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+	<meta name="apple-touch-fullscreen" content="yes" />
+	<title>Hockey Pal</title>
+	<style type="text/css">
+		/* Global Styles */
+		body, div, table
+		{
+		    background-color: transparent;
+		    font-size: 0.9rem;
+		    font-family: tahoma, verdana, arial;
+		    color: navy;
+		}
+		
+		div.Header 
+		{
+		    margin-bottom: 15px;
+		}
+
+		div.Header div.Title
+		{
+		    font-weight: bold;
+		    font-size: 10pt;
+		    display: inline-block;
+		    margin-right: 25px;
+		    color: navy;
+		}
+		
+		div.Header div.Menu
+		{
+		    display: inline-block;
+		}
+
+		div.Header div.Menu a
+		{
+		    background-color: navy;
+		    color: white;
+		    display: inline-block;
+		    padding: 10px 10px;
+		    text-decoration: none;
+		    border-radius: 5px;
+		    border: solid navy 1px;
+		    margin-left: 10px;
+		}
+
+		div.Header div.Menu a:hover
+		{
+		    background-color: white;
+		    color: navy;
+		}
+
+		div.Body 
+		{
+		    display: block;
+		    width: 100%;
+		}
+		
+		input[type=button] 
+		{
+		    min-height: 40px;
+		}
+		
+		input[type=text]
+		{
+		    font-size: 1rem;
+		    padding: 10px 15px;
+		}
+		
+	</style>
+	<style type="text/css">
+
+		/* Lineup Styles */
+
+		#divEntry 
+		{
+		    display: block;
+		    width: 100%;
+		    padding: 10px 15px;
+		}
+		
+		#divLineup 
+		{
+		    display: block;
+		    width: 100%;
+		}
+		
+		#divLineup div.PlayerEntry
+		{
+		    display: block;
+		    padding: 15px 5px;
+		    border: solid navy 1px;
+		}
+
+		#divLineup div.PlayerEntry:hover
+		{
+		    background-color: navy;
+		    color: white;
+		}
+		
+		div.PlayerDisplayEntry
+		{
+		    display: block;
+		    margin-top: 5px;
+		    margin-bottom: 15px;
+		}
+
+		div.PlayerDisplayEntry input[type=button]
+		{
+		    padding-left: 25px;
+		    padding-right: 25px;
+		    margin-right: 25px;
+		}
+
+		div.PlayerDisplayPrompt
+		{
+		    display: block;
+		    font-style: italic;
+		}
+		
+		div.PlayerDisplayValue
+		{
+		    display: block;
+		    margin-left: 10px;
+		}
+		
+	</style>
+	<style type="text/css">
+		/* Game Styles */
+
+		#divGameClockArea 
+		{
+		    display: block;
+		    min-height: 75px;
+		    vertical-align: top;
+		}
+		
+		#divGameClock
+		{
+		    display: inline-block;
+		    background-color: black;
+		    color: yellow;
+		    margin-right: 25px;
+		    border-radius: 5px;
+		    font-size: 2rem;
+		    min-width: 100px;
+		    min-height: 50px;
+		}
+
+		#divGameClock div.Digits
+		{
+		    display: inline-block;
+		    color: yellow;
+		    font-size: 2rem;
+		    min-width: 25px;
+		    height: 50px;
+		    font-family: courier;
+		    font-weight: bold;
+		}
+		
+		#divGameClockControls
+		{
+		    display: inline-block;
+		    border: solid black 1px;
+		    border-radius: 5px;
+		    min-width: 100px;
+		    min-height: 50px;
+		}
+
+		#divBench 
+		{
+		    display: inline-block;
+		    float: left;
+		    width: 45%;
+		    min-height: 400px;
+		    border: solid black 2px;
+		}
+		
+		#divOnIce 
+		{
+		    display: inline-block;
+		    float: right;
+		    width: 45%;
+		    min-height: 400px;
+		    border: solid black 2px;
+		}
+		
+		ul 
+		{
+		    margin: 0;
+		    padding: 0;
+		}
+		
+		ul li
+		{
+		    list-style: none;
+		    margin: 0;
+		    padding: 15px 5px;
+		    border: solid navy 1px;
+		}
+		
+		
+		@media screen and (min-width: 768px) {
+			ul li:hover
+			{
+				background-color: navy;
+				color: white;
+			}
+		}
+
+	</style>
+	<script src="jquery-3.1.1.min.js" type="text/javascript"></script>
+	<script type="text/javascript">
+
+		$(document).ready(function () {
+
+			BuildLineup();
+
+			$("#txtPlayerNumber").change(function () {
+				$(this).val($(this).val().replace(/[^0-9]/g, ""));
+			});
+
+			$("#divLineup div").click(function () {
+				ShowPlayer($(this));
+			});
+
+			InitializeBench();
+		});
+
+		function BuildLineup() {
+
+			InitLineup();
+
+			var keyArray = [];
+
+			for (i = 0; localStorage.key(i) != null; i++) {
+
+				if (localStorage.key(i).substr(0, 6) != "player")
+					continue;
+
+				var playerInfo = localStorage.getItem(localStorage.key(i));
+
+				var arrayInfo = playerInfo.split(",");
+
+				keyArray.push(parseInt(arrayInfo[0]));
+			}
+
+			keyArray.sort(function (a, b) { return a - b; });
+
+			$(keyArray).each(function () {
+				var playerNumber = this;
+				var infoKey = "player" + playerNumber;
+
+				var playerInfo = localStorage.getItem(infoKey);
+				var arrayInfo = playerInfo.split(",");
+				var displayInfo = arrayInfo[0] + ": " + arrayInfo[1];
+
+				var objPlayerInfo = $("<div/>").text(displayInfo).addClass("PlayerEntry");
+
+				$("#divLineup").append(objPlayerInfo);
+			});
+		}
+
+		function InitLineup() {
+			var playerNumberList = localStorage.getItem("NumberList");
+
+			if (playerNumberList != null)
+				return;
+
+			console.log("setting localStorage.NumberList, Initializing Lineup");
+
+			localStorage.setItem("NumberList", "1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,40,41,42,43,44,45,46,47,48,49");
+
+			var playerNumbers = localStorage.NumberList.split(",");
+
+			$(playerNumbers).each(function () {
+				var playerNumber = this;
+				var infoKey = "player" + playerNumber;
+
+				var playerInfo = localStorage.getItem(infoKey);
+
+				if (playerInfo == null) {
+					var playerName = "Player" + playerNumber;
+
+					playerObjInfo = [playerNumber, playerName];
+
+					localStorage.setItem(infoKey, playerObjInfo);
+				}
+			});
+		}
+
+		function ShowPlayer(divPlayer) {
+			console.log(divPlayer);
+
+			var playerInfo = $.trim(divPlayer.text());
+			var playerNumber = $.trim(playerInfo.split(":")[0]);
+
+			var infoKey = "player" + playerNumber;
+
+			var playerInfo = localStorage.getItem(infoKey);
+
+			if (playerInfo == null) {
+				alert("playerInfo not found");
+				return;
+			}
+
+			if ($("#divEntry").is(":visible") && playerNumber == $("#txtPlayerNumber").val()) {
+				$("#divEntry").hide();
+				return;
+			}
+
+			$("#divEntry").hide();
+
+			var playerParts = playerInfo.split(",");
+
+			$("#txtPlayerNumber").val(playerParts[0]);
+			$("#txtPlayerName").val(playerParts[1]);
+
+			$("#divEntry").insertAfter(divPlayer);
+			$("#txtPlayerNumber").prop("readonly", true);
+			$("#divEntry").show();
+			$("#txtPlayerName").focus();
+		}
+
+		function UpdatePlayer() {
+			var playerName = $.trim($("#txtPlayerName").val());
+
+			if (playerName === "") {
+				alert("Player Name must have a value");
+				return;
+			}
+
+			var playerNumber = $("#txtPlayerNumber").val();
+			var nPlayerNumber = parseInt(playerNumber);
+			var infoKey = "player" + playerNumber;
+			var arrayInfo = [playerNumber, playerName];
+			var displayInfo = playerNumber + ": " + playerName;
+
+			localStorage.setItem(infoKey, arrayInfo);
+
+			var divs = $("div.PlayerEntry")
+				.filter(function () {
+					return parseInt($.trim($(this).text()).split(":")[0]) >= nPlayerNumber;
+				});
+
+			if (divs.length === 0) {
+				var objPlayerInfo = $("<div/>").text(displayInfo).addClass("PlayerEntry");
+				$("#divLineup").append(objPlayerInfo);
+				return;
+			}
+
+			var div = $(divs[0]);
+
+			if ($.trim(div.text()).split(":")[0] === playerNumber) {
+				div.text(displayInfo);
+				return;
+			}
+
+			var newDiv = $("<div/>").text(displayInfo).addClass("PlayerEntry");
+
+			newDiv.insertBefore(div);
+		}
+
+		function CloseEntry() {
+			$("#divEntry").hide();
+		}
+
+		function AddNewPlayer() {
+			$("#divEntry").hide();
+			$("#divEntry").insertBefore("#divLineup");
+			$("#txtPlayerNumber").prop("readonly", false).focus().val("");
+			$("#txtPlayerName").val("");
+			$("#divEntry").show();
+		}
+
+		function DeleteEntry() {
+			var playerNumber = $("#txtPlayerNumber").val();
+			var nPlayerNumber = parseInt(playerNumber);
+			var infoKey = "player" + playerNumber;
+
+			localStorage.removeItem(infoKey);
+
+			var div = $("div.PlayerEntry")
+				.filter(function () {
+					return parseInt($.trim($(this).text()).split(":")[0]) === nPlayerNumber;
+				});
+
+			if (div.length === 1) {
+				div.remove();
+			}
+
+			$("#divEntry").hide();
+		}
+
+	</script>
+	<script type="text/javascript">
+		// intra-screen navigation
+
+		function NavigateToGame() {
+			$("#divHockeyLineup").slideToggle(500);
+			$("#divHockeyGame").slideToggle(500);
+		}
+
+		function NavigateToLineup() {
+			InitializeBench();
+			$("#divHockeyGame").slideToggle(500);
+			$("#divHockeyLineup").slideToggle(500);
+		}
+
+	</script>
+	<script type="text/javascript">
+		// Hockey Game script
+
+		function ClockTime(minutes, seconds) {
+			this.Minutes = 0;
+			this.Seconds = 0;
+
+			this.toArray = function () {
+				return [this.Minutes, this.Seconds];
+			};
+
+			this.toString = function () {
+				var sSeconds = "0" + this.Seconds.toString();
+				sSeconds = sSeconds.substr(sSeconds.length - 2);
+				var sMinutes = "0" + this.Minutes.toString();
+				sMinutes = sMinutes.substr(sMinutes.length - 2);
+
+				return sMinutes + ":" + sSeconds;
+			};
+
+			this.inflate = function (hoursOrSerializedValue, seconds) {
+				this.Minutes = 0;
+				this.Seconds = 0;
+
+				if (hoursOrSerializedValue == null)
+					return;
+
+				if (seconds == null) {
+					var serializedParts = hoursOrSerializedValue.split(":");
+
+					if (serializedParts.length != 2) {
+						alert("Invalid Serialized Time: " + serializedParts);
+						return;
+					}
+
+					var minutes = parseInt(serializedParts[0]);
+					var seconds = parseInt(serializedParts[1]);
+
+					if (isNaN(minutes) || isNaN(seconds)) {
+						alert("Invalid Serialized Time: " + serializedParts);
+						return;
+					}
+
+					if (minutes > 20 || minutes < 0) {
+						alert("Invalid Serialized Time: " + serializedParts);
+						return;
+					}
+
+					if (seconds > 59 || seconds < 0) {
+						alert("Invalid Serialized Time: " + serializedParts);
+						return;
+					}
+
+					this.Minutes = minutes;
+					this.Seconds = seconds;
+
+					return this;
+				}
+
+				var myMinutes = parseInt(hoursOrSerializedValue);
+				var mySeconds = parseInt(seconds);
+
+				if (isNaN(myMinutes) || isNaN(mySeconds)) {
+					alert("Invalid Time");
+					return;
+				}
+
+				if (myMinutes > 20 || myMinutes < 0) {
+					alert("Invalid Minutes: " + hoursOrSerializedValue);
+					return;
+				}
+
+				if (mySeconds > 59 || mySeconds < 0) {
+					alert("Invalid Seconds: " + seconds);
+					return;
+				}
+
+				this.Minutes = myMinutes;
+				this.Seconds = mySeconds;
+
+				return this;
+			};
+
+			this.inflate(minutes, seconds);
+		}
+
+		function HockeyClock(clockTimeStart, clockTimeCurrent) {
+			this.StartTime = null;
+			this.CurrentTime = null;
+
+			this.inflate = function (serializedHockeyClock) {
+				this.StartTime = null;
+				this.CurrentTime = null;
+
+				if (serializedHockeyClock == null || serializedHockeyClock === "")
+					return;
+
+				var objClock = serializedHockeyClock.split(",");
+
+				if (objClock.length != 2)
+					return;
+
+				initialize(objClock[0], objClock[1]);
+			}
+
+			this.initialize = function (serializedClockTimeStart, serializedClockTimeCurrent) {
+				this.StartTime = new ClockTime().inflate(serializedClockTimeStart);
+				this.CurrentTime = new ClockTime().inflate(serializedClockTimeCurrent);
+			}
+
+			this.toString = function () {
+				var objClock = [this.StartTime || "", this.CurrentTime || ""];
+
+				return objClock.toString();
+			}
+
+			if (clockTimeStart != null && clockTimeCurrent != null) {
+				this.initialize(clockTimeStart.toString(), clockTimeCurrent.toString());
+			}
+		}
+
+		function NewPeriod() {
+			localStorage.hockeyClock = [15, 0];
+			$("#divGameClockMinutes").text("15");
+			$("#divGameClockSeconds").text("00");
+		}
+
+		function StartClock() {
+			var hockeyClock = localStorage.hockeyClock;
+
+			if (hockeyClock == null || hockeyClock == "") {
+				hockeyClock = [15, 0];
+				localStorage.hockeyClock = hockeyClock;
+			}
+		}
+
+
+		function PostToOtherList(item, fromList, toList) {
+			var playerLabel = $.trim(item.text());
+			var jerseyNo = parseInt($.trim(playerLabel.split(":")[0]));
+
+			var following = toList.find("li").filter(function () {
+				var liPlayerNo = parseInt($.trim($(this).text().split(":")[0]));
+				return jerseyNo < liPlayerNo;
+			});
+
+			if (following.length == 0)
+				toList.append(item);
+			else {
+				var firstItem = $(following[0]);
+
+				item.insertBefore(firstItem);
+			}
+
+			var gamePlayers = [];
+
+			$("#ulOnIce li").each(function () {
+				var playerNumber = $.trim($(this).text().split(":")[0]);
+
+				gamePlayers.push(playerNumber);
+			});
+
+			localStorage.setItem("gamePlayers", gamePlayers);
+
+			item.off("click");
+			item.on("click", function () {
+				PostToOtherList($(this), toList, fromList);
+			});
+		}
+
+
+		function ResetGame() {
+
+			if (!confirm("Reset game - will lose all game-time history?"))
+				return;
+
+			localStorage.removeItem("gamePlayers");
+
+			InitializeBench();
+		}
+
+
+		function InitializeBench() {
+			$("#ulBench").empty();
+			$("#ulOnIce").empty();
+
+			var keyArray = [];
+
+			for (i = 0; localStorage.key(i) != null; i++) {
+
+				if (localStorage.key(i).substr(0, 6) != "player")
+					continue;
+
+				var playerInfo = localStorage.getItem(localStorage.key(i));
+
+				var arrayInfo = playerInfo.split(",");
+
+				keyArray.push(parseInt(arrayInfo[0]));
+			}
+
+			keyArray.sort(function (a, b) { return a - b; });
+
+			$(keyArray).each(function () {
+				var playerNumber = this;
+				var infoKey = "player" + playerNumber;
+
+				var playerInfo = localStorage.getItem(infoKey);
+				var arrayInfo = playerInfo.split(",");
+				var displayInfo = arrayInfo[0] + ": " + arrayInfo[1];
+
+				var objPlayerInfo = $("<li/>").text(displayInfo)
+
+				$("#ulBench").append(objPlayerInfo);
+			});
+
+			$("#ulBench li").click(function () {
+				PostToOtherList($(this), $("#ulBench"), $("#ulOnIce"));
+			});
+
+			var gamePlayers = localStorage.gamePlayers;
+
+			if (gamePlayers != null && gamePlayers != "") {
+				var gamePlayersArray = gamePlayers.split(",");
+
+				$(gamePlayersArray).each(function () {
+					var playerNumber = this;
+
+					var liPlayers = $("#ulBench li").filter(function () {
+						var liPlayerNumber = $.trim($(this).text().split(":")[0]);
+
+						return playerNumber == liPlayerNumber;
+					});
+
+					if (liPlayers.length === 1) {
+						PostToOtherList(liPlayers, $("#ulBench"), $("#ulOnIce"));
+					}
+				});
+			}
+		}
+
+		function ScoreEvent(plusMinus, arrayPlayerNumbers) {
+			this.PlusMinus = plusMinus;
+			this.PlayerNumbers = arrayPlayerNumbers;
+
+			this.toString = function () {
+				return this.PlusMinus.toString() + "!" + this.PlayerNumbers.toString().replace(/,/g, ";");
+			}
+
+			this.inflate = function (serializedScoreEvent) {
+				this.PlusMinus = 0;
+				this.PlayerNumbers = [];
+
+				var eventParts = serializedScoreEvent.split("!");
+
+				if (eventParts.length != 2) {
+					alert("Failed to deserialize a ScoreEvent");
+					return;
+				}
+
+				var plusMinus = parseInt(eventParts[0]);
+
+				if (isNaN(plusMinus) || (plusMinus != -1 && plusMinus != 1)) {
+					alert("Failed to deserialize a ScoreEvent - Invalid Plus/Minus");
+					return;
+				}
+
+				if ($.trim(eventParts[1]) === "") {
+					alert("Failed to deserialize a ScoreEvent - Empty Players List");
+					return;
+				}
+
+				var playerArray = eventParts[1].split(";");
+
+				this.PlusMinus = plusMinus;
+				this.PlayerNumbers = playerArray;
+
+				return this;
+			}
+		}
+
+		ScoreEvent.ToList = function (scoreEventsString) {
+			var eventsArray = scoreEventsString.split(",");
+
+			var finalList = [];
+
+			$(eventsArray).each(function () {
+				var scoreEvent = new ScoreEvent().inflate(this);
+
+				finalList.push(scoreEvent);
+			});
+
+			return finalList;
+		}
+
+		function RecordScoringEvent(plusMinus) {
+			var arrayPlayers = [];
+
+			$("#ulOnIce li").each(function () {
+				var playerNumber = $.trim($(this).text().split(":")[0]);
+
+				arrayPlayers.push(playerNumber);
+			});
+
+			var scoreEvent = new ScoreEvent(plusMinus, arrayPlayers);
+
+			var currentEventsArray = [];
+
+			var currentEvents = localStorage.scoreEvents;
+
+			if (currentEvents != null && currentEvents != "") {
+				currentEventsArray = currentEvents.split(",");
+			}
+
+			currentEventsArray.push(scoreEvent);
+
+			localStorage.setItem("scoreEvents", currentEventsArray);
+		}
+
+
+	</script>
+</head>
+<body>
+	<div id="divHockeyLineup">
+		<div>
+			<div class="Header">
+				<div class="Title">Hockey Lineup</div>
+				<div class="Menu">
+					<a href="javascript: NavigateToGame();">Game</a>
+					<a href="javascript: AddNewPlayer()">Add Player</a>
+				</div>
+				<hr />
+			</div>
+			<div class="Body">
+				<div class="Content">
+					<div id="divLineup"></div>
+				</div>
+			</div>
+			<div class="Footer">
+				<hr />
+				Copyright &copy; 2018 - Viking Information Services, Inc.
+			</div>
+		</div>
+		<div id="divEntry" style="display: none;">
+			<div class="PlayerDisplayEntry">
+				<div class="PlayerDisplayPrompt">
+					Player #
+				</div>
+				<div class="PlayerDisplayValue">
+					<input type="text" id="txtPlayerNumber" style="width: 50px;" readonly="readonly" />
+				</div>
+			</div>
+			<div class="PlayerDisplayEntry">
+				<div class="PlayerDisplayPrompt">
+					Player Name
+				</div>
+				<div class="PlayerDisplayValue">
+					<input type="text" id="txtPlayerName" style="width: 150px;" />
+				</div>
+			</div>
+			<div class="PlayerDisplayEntry">
+				<input type="button" id="btnUpdate" value="Update" onclick="UpdatePlayer();" />
+				<input type="button" id="btnClose" value="Close" onclick="CloseEntry();" />
+				<input type="button" id="btnDelete" value="Delete" onclick="DeleteEntry();" />
+			</div>
+		</div>
+	</div>
+	<div id="divHockeyGame" style="display: none;">
+		<div>
+			<div class="Header">
+				<div class="Title">
+					Hockey Game</div>
+				<div class="Menu">
+					<a href="javascript: NavigateToLineup();">Lineup</a>
+				</div>
+				<hr />
+				<div id="divGameClockArea">
+					<div id="divGameClock">
+						<div id="divGameClockMinutes" class="Digits">15</div>
+						<span>:</span>
+						<div id="divGameClockSeconds" class="Digits">00</div>
+					</div>
+					<div id="divGameClockControls">
+						<input type="button" id="btnNewPeriod" value="New Period" onclick="NewPeriod()" />
+						<input type="button" id="btnStartClock" value="Start" onclick="StartClock()" />
+						<input type="button" id="btnStopClock" value="Stop" onclick="StopClock()" />
+					</div>
+				</div>
+				<hr />
+				<div class="Menu" style="width: 100%;">
+					<table style="width: 100%;">
+						<tr>
+							<td>
+								<input type="button" id="btnScoreGoal" onclick="RecordScoringEvent(1)" value="We Scored" />
+							</td>
+							<td style="text-align: right;">
+								<input type="button" id="btnGiveUpGoal" onclick="RecordScoringEvent(-1)" value="They Scored" />
+							</td>
+						</tr>
+					</table>
+				</div>
+				<hr />
+			</div>
+			<div class="Body">
+				<div class="Content">
+					<div id="divBench">
+						<ul id="ulBench">
+						</ul>
+					</div>
+					<div id="divOnIce">
+						<ul id="ulOnIce">
+						</ul>
+					</div>
+					<div style="clear: both" />
+				</div>
+			</div>
+			<div class="Footer">
+				<hr />
+				<input type="button" id="btnResetGame" onclick="ResetGame();" value="Reset Game" />
+				<hr />
+				Copyright &copy; 2018 - Viking Information Services, Inc.
+			</div>
+		</div>
+	</div>
+</body>
+</html>
