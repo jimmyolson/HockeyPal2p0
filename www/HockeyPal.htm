@@ -133,45 +133,6 @@
 	<style type="text/css">
 		/* Game Styles */
 
-		#divGameClockArea 
-		{
-		    display: block;
-		    min-height: 75px;
-		    vertical-align: top;
-		}
-		
-		#divGameClock
-		{
-		    display: inline-block;
-		    background-color: black;
-		    color: yellow;
-		    margin-right: 25px;
-		    border-radius: 5px;
-		    font-size: 2rem;
-		    min-width: 100px;
-		    min-height: 50px;
-		}
-
-		#divGameClock div.Digits
-		{
-		    display: inline-block;
-		    color: yellow;
-		    font-size: 2rem;
-		    min-width: 25px;
-		    height: 50px;
-		    font-family: courier;
-		    font-weight: bold;
-		}
-		
-		#divGameClockControls
-		{
-		    display: inline-block;
-		    border: solid black 1px;
-		    border-radius: 5px;
-		    min-width: 100px;
-		    min-height: 50px;
-		}
-
 		#divOnIce 
 		{
 		    display: block;
@@ -187,6 +148,8 @@
 		{
 		    height: 30px;
 		    width: 30px;
+		    margin: 5px;
+		    border-radius: 5px;
 		}
 
 		#divRoster input[type=button].OnIce
@@ -395,175 +358,6 @@
 
 	</script>
 	<script type="text/javascript">
-		// Hockey Game script
-
-		function ClockTime(minutes, seconds) {
-			this.Minutes = 0;
-			this.Seconds = 0;
-
-			this.toArray = function () {
-				return [this.Minutes, this.Seconds];
-			};
-
-			this.toString = function () {
-				var sSeconds = "0" + this.Seconds.toString();
-				sSeconds = sSeconds.substr(sSeconds.length - 2);
-				var sMinutes = "0" + this.Minutes.toString();
-				sMinutes = sMinutes.substr(sMinutes.length - 2);
-
-				return sMinutes + ":" + sSeconds;
-			};
-
-			this.inflate = function (hoursOrSerializedValue, seconds) {
-				this.Minutes = 0;
-				this.Seconds = 0;
-
-				if (hoursOrSerializedValue == null)
-					return;
-
-				if (seconds == null) {
-					var serializedParts = hoursOrSerializedValue.split(":");
-
-					if (serializedParts.length != 2) {
-						alert("Invalid Serialized Time: " + serializedParts);
-						return;
-					}
-
-					var minutes = parseInt(serializedParts[0]);
-					var seconds = parseInt(serializedParts[1]);
-
-					if (isNaN(minutes) || isNaN(seconds)) {
-						alert("Invalid Serialized Time: " + serializedParts);
-						return;
-					}
-
-					if (minutes > 20 || minutes < 0) {
-						alert("Invalid Serialized Time: " + serializedParts);
-						return;
-					}
-
-					if (seconds > 59 || seconds < 0) {
-						alert("Invalid Serialized Time: " + serializedParts);
-						return;
-					}
-
-					this.Minutes = minutes;
-					this.Seconds = seconds;
-
-					return this;
-				}
-
-				var myMinutes = parseInt(hoursOrSerializedValue);
-				var mySeconds = parseInt(seconds);
-
-				if (isNaN(myMinutes) || isNaN(mySeconds)) {
-					alert("Invalid Time");
-					return;
-				}
-
-				if (myMinutes > 20 || myMinutes < 0) {
-					alert("Invalid Minutes: " + hoursOrSerializedValue);
-					return;
-				}
-
-				if (mySeconds > 59 || mySeconds < 0) {
-					alert("Invalid Seconds: " + seconds);
-					return;
-				}
-
-				this.Minutes = myMinutes;
-				this.Seconds = mySeconds;
-
-				return this;
-			};
-
-			this.inflate(minutes, seconds);
-		}
-
-		function HockeyClock(clockTimeStart, clockTimeCurrent) {
-			this.StartTime = null;
-			this.CurrentTime = null;
-
-			this.inflate = function (serializedHockeyClock) {
-				this.StartTime = null;
-				this.CurrentTime = null;
-
-				if (serializedHockeyClock == null || serializedHockeyClock === "")
-					return;
-
-				var objClock = serializedHockeyClock.split(",");
-
-				if (objClock.length != 2)
-					return;
-
-				initialize(objClock[0], objClock[1]);
-			}
-
-			this.initialize = function (serializedClockTimeStart, serializedClockTimeCurrent) {
-				this.StartTime = new ClockTime().inflate(serializedClockTimeStart);
-				this.CurrentTime = new ClockTime().inflate(serializedClockTimeCurrent);
-			}
-
-			this.toString = function () {
-				var objClock = [this.StartTime || "", this.CurrentTime || ""];
-
-				return objClock.toString();
-			}
-
-			if (clockTimeStart != null && clockTimeCurrent != null) {
-				this.initialize(clockTimeStart.toString(), clockTimeCurrent.toString());
-			}
-		}
-
-		function NewPeriod() {
-			localStorage.hockeyClock = [15, 0];
-			$("#divGameClockMinutes").text("15");
-			$("#divGameClockSeconds").text("00");
-		}
-
-		function StartClock() {
-			var hockeyClock = localStorage.hockeyClock;
-
-			if (hockeyClock == null || hockeyClock == "") {
-				hockeyClock = [15, 0];
-				localStorage.hockeyClock = hockeyClock;
-			}
-		}
-
-
-		function PostToOtherList(item, fromList, toList) {
-			var playerLabel = $.trim(item.text());
-			var jerseyNo = parseInt($.trim(playerLabel.split(":")[0]));
-
-			var following = toList.find("li").filter(function () {
-				var liPlayerNo = parseInt($.trim($(this).text().split(":")[0]));
-				return jerseyNo < liPlayerNo;
-			});
-
-			if (following.length == 0)
-				toList.append(item);
-			else {
-				var firstItem = $(following[0]);
-
-				item.insertBefore(firstItem);
-			}
-
-			var gamePlayers = [];
-
-			$("#ulOnIce li").each(function () {
-				var playerNumber = $.trim($(this).text().split(":")[0]);
-
-				gamePlayers.push(playerNumber);
-			});
-
-			localStorage.setItem("gamePlayers", gamePlayers);
-
-			item.off("click");
-			item.on("click", function () {
-				PostToOtherList($(this), toList, fromList);
-			});
-		}
-
 
 		function ResetGame() {
 
@@ -577,8 +371,8 @@
 
 
 		function InitializeBench() {
-			$("#ulBench").empty();
-			$("#ulOnIce").empty();
+			$("#divRoster").empty();
+			$("#divOnIce").empty();
 
 			var keyArray = [];
 
@@ -597,20 +391,9 @@
 			keyArray.sort(function (a, b) { return a - b; });
 
 			$(keyArray).each(function () {
-				var playerNumber = this;
-				var infoKey = "player" + playerNumber;
+				var thisPlayer = $("<input type='button' name='btnPlayer' onclick='TogglePlayer(this);'/>").val(this);
 
-				var playerInfo = localStorage.getItem(infoKey);
-				var arrayInfo = playerInfo.split(",");
-				var displayInfo = arrayInfo[0] + ": " + arrayInfo[1];
-
-				var objPlayerInfo = $("<li/>").text(displayInfo)
-
-				$("#ulBench").append(objPlayerInfo);
-			});
-
-			$("#ulBench li").click(function () {
-				PostToOtherList($(this), $("#ulBench"), $("#ulOnIce"));
+				$("#divRoster").append(thisPlayer);
 			});
 
 			var gamePlayers = localStorage.gamePlayers;
@@ -621,17 +404,27 @@
 				$(gamePlayersArray).each(function () {
 					var playerNumber = this;
 
-					var liPlayers = $("#ulBench li").filter(function () {
-						var liPlayerNumber = $.trim($(this).text().split(":")[0]);
+					var btnPlayer = $("input[type=button][name=btnPlayer][val=" + playerNumber + "]");
 
-						return playerNumber == liPlayerNumber;
-					});
-
-					if (liPlayers.length === 1) {
-						PostToOtherList(liPlayers, $("#ulBench"), $("#ulOnIce"));
+					if (btnPlayer.length != 1) {
+						alert("Did not find button for player #" + playerNumber);
+						return;
 					}
+
+					btnPlayer.addClass("OnIce");
 				});
 			}
+		}
+
+		function TogglePlayer(btn) {
+			var playerNumber = $.trim($(btn).val());
+
+			var gamePlayers = localStorage.gamePlayers;
+
+			if (gamePlayers == null || gamePlayers == "" )
+				gamePlayers = [];
+
+			$(btn).toggleClass("OnIce");
 		}
 
 		function ScoreEvent(plusMinus, arrayPlayerNumbers) {
@@ -785,8 +578,8 @@
 			</div>
 			<div class="Body">
 				<div class="Content">
-					<div class="divOnIce"></div>
-					<div class="divRoster"></div>
+					<div id="divOnIce"></div>
+					<div id="divRoster"></div>
 				</div>
 			</div>
 			<div class="Footer">
