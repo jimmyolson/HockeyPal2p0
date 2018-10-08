@@ -136,7 +136,9 @@
 		#divOnIce 
 		{
 		    display: block;
-		    min-height: 50px;
+		    min-height: 40px;
+		    font-size: 1.5rem;
+		    font-weight: bold;
 		}
 		
 		#divRoster
@@ -245,7 +247,7 @@
 				ShowPlayer($(this));
 			});
 
-			InitializeBench();
+			RefreshRoster();
 		});
 
 		function BuildLineup() {
@@ -260,19 +262,12 @@
 					continue;
 
 				var serializedPlayerProfile = localStorage.getItem(localStorage.key(i));
-
-				console.log("serializedPlayerProfile: %s", serializedPlayerProfile);
-
 				var playerProfile = new PlayerProfile(serializedPlayerProfile);
-
-				console.log(playerProfile);
 
 				keyArray.push(parseInt(playerProfile.PlayerNumber));
 			}
 
 			keyArray.sort(function (a, b) { return a - b; });
-
-			console.log(keyArray);
 
 			$(keyArray).each(function () {
 				var playerNumber = this;
@@ -293,7 +288,7 @@
 			if (playerNumberList != null)
 				return;
 
-			console.log("setting localStorage.NumberList, Initializing Lineup");
+			//console.log("setting localStorage.NumberList, Initializing Lineup");
 
 			localStorage.setItem("NumberList", "1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,40,41,42,43,44,45,46,47,48,49");
 
@@ -318,7 +313,7 @@
 		}
 
 		function ShowPlayer(divPlayer) {
-			console.log(divPlayer);
+			//console.log(divPlayer);
 
 			var playerInfo = $.trim(divPlayer.text());
 			var playerNumber = $.trim(playerInfo.split(":")[0]);
@@ -339,7 +334,7 @@
 
 			$("#divEntry").hide();
 
-			console.log("ShowPlayer - serializedPlayer: %s", serializedPlayer);
+			//console.log("ShowPlayer - serializedPlayer: %s", serializedPlayer);
 
 			var playerProfile = new PlayerProfile(serializedPlayer);
 
@@ -391,6 +386,11 @@
 			if (divs.length === 0) {
 				var objPlayerInfo = playerProfile.createPlayerDiv();
 				$("#divLineup").append(objPlayerInfo);
+
+				objPlayerInfo.click(function () {
+					ShowPlayer($(this));
+				});
+
 				return;
 			}
 
@@ -402,6 +402,10 @@
 			}
 
 			var newDiv = playerProfile.createPlayerDiv();
+
+			newDiv.click(function () {
+				ShowPlayer($(this));
+			});
 
 			newDiv.insertBefore(div);
 		}
@@ -415,6 +419,7 @@
 			$("#divEntry").insertBefore("#divLineup");
 			$("#txtPlayerNumber").prop("readonly", false).focus().val("");
 			$("#txtPlayerName").val("");
+			$("#rbUnknown").prop("checked", true);
 			$("#divEntry").show();
 		}
 
@@ -422,6 +427,18 @@
 			var playerNumber = $("#txtPlayerNumber").val();
 			var nPlayerNumber = parseInt(playerNumber);
 			var infoKey = "player" + playerNumber;
+
+			var gamePlayers = localStorage.gamePlayers;
+
+			if (gamePlayers != null && gamePlayers != "") {
+				var gamePlayersArray = gamePlayers.split(",");
+
+				if (gamePlayers.indexOf(playerNumber) >= 0) {
+					alert("Player cannot be deleted - currently 'On the Ice'");
+					return;
+				}
+			}
+
 
 			localStorage.removeItem(infoKey);
 
@@ -442,12 +459,12 @@
 		// intra-screen navigation
 
 		function NavigateToGame() {
+			RefreshRoster();
 			$("#divHockeyLineup").slideToggle(500);
 			$("#divHockeyGame").slideToggle(500);
 		}
 
 		function NavigateToLineup() {
-			InitializeBench();
 			$("#divHockeyGame").slideToggle(500);
 			$("#divHockeyLineup").slideToggle(500);
 		}
@@ -462,11 +479,11 @@
 
 			localStorage.removeItem("gamePlayers");
 
-			InitializeBench();
+			RefreshRoster();
 		}
 
 
-		function InitializeBench() {
+		function RefreshRoster() {
 			$("#divRoster").empty();
 			$("#divOnIce").empty();
 
@@ -477,14 +494,16 @@
 				if (localStorage.key(i).substr(0, 6) != "player")
 					continue;
 
-				var playerInfo = localStorage.getItem(localStorage.key(i));
+				var serializedPlayer = localStorage.getItem(localStorage.key(i));
+				var playerProfile = new PlayerProfile(serializedPlayer);
 
-				var arrayInfo = playerInfo.split(",");
-
-				keyArray.push(parseInt(arrayInfo[0]));
+				keyArray.push(parseInt(playerProfile.PlayerNumber));
 			}
 
 			keyArray.sort(function (a, b) { return a - b; });
+
+			console.log("RefreshRoster.keyArray.length: %d", keyArray.length);
+			console.log(keyArray);
 
 			$(keyArray).each(function () {
 				var thisPlayer = $("<input type='button' name='btnPlayer' onclick='TogglePlayer(this);'/>").val(this);
@@ -500,7 +519,8 @@
 				$(gamePlayersArray).each(function () {
 					var playerNumber = this;
 
-					var btnPlayer = $("input[type=button][name=btnPlayer][val=" + playerNumber + "]");
+					var searchButton = "input[type=button][name=btnPlayer][value=" + playerNumber + "]"
+					var btnPlayer = $(searchButton);
 
 					if (btnPlayer.length != 1) {
 						alert("Did not find button for player #" + playerNumber);
@@ -509,6 +529,8 @@
 
 					btnPlayer.addClass("OnIce");
 				});
+
+				$("#divOnIce").text(gamePlayersArray.toString());
 			}
 		}
 
@@ -517,10 +539,25 @@
 
 			var gamePlayers = localStorage.gamePlayers;
 
-			if (gamePlayers == null || gamePlayers == "" )
-				gamePlayers = [];
+			var playerList = [];
+
+			if (gamePlayers != null && gamePlayers != "")
+				playerList = gamePlayers.split(",");
+
+			var idx = playerList.indexOf(playerNumber);
+
+			if (idx >= 0)
+				playerList.splice(idx, 1);
+			else
+				playerList.push(playerNumber);
+
+			playerList.sort(function (a, b) { return parseInt(a) - parseInt(b); });
+
+			localStorage.gamePlayers = playerList;
 
 			$(btn).toggleClass("OnIce");
+
+			$("#divOnIce").text(playerList.toString());
 		}
 
 		function ScoreEvent(plusMinus, arrayPlayerNumbers) {
@@ -685,6 +722,7 @@
 			<div class="Body">
 				<div class="Content">
 					<div id="divOnIce"></div>
+					<hr />
 					<div id="divRoster"></div>
 				</div>
 			</div>
