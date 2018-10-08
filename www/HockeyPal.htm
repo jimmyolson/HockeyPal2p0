@@ -159,6 +159,16 @@
 		    background-color: yellow;
 		    font-weight: bold;
 		}
+		
+		div.PlayerRoster 
+		{
+		    display: block;
+		    border: solid black 1px;
+		    margin: 5px;
+		    min-height: 25px;
+		    border-radius: 5px;
+		}
+		
 	</style>
 	<script src="jquery-3.1.1.min.js" type="text/javascript"></script>
 	<script type="text/javascript">
@@ -288,8 +298,6 @@
 			if (playerNumberList != null)
 				return;
 
-			//console.log("setting localStorage.NumberList, Initializing Lineup");
-
 			localStorage.setItem("NumberList", "1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,40,41,42,43,44,45,46,47,48,49");
 
 			var playerNumbers = localStorage.NumberList.split(",");
@@ -305,16 +313,12 @@
 
 					var playerProfile = new PlayerProfile(playerNumber, playerName, "");
 
-					// console.log("setItem( '%s', '%s' )", infoKey, playerProfile.toString());
-
 					localStorage.setItem(infoKey, playerProfile.toString());
 				}
 			});
 		}
 
 		function ShowPlayer(divPlayer) {
-			//console.log(divPlayer);
-
 			var playerInfo = $.trim(divPlayer.text());
 			var playerNumber = $.trim(playerInfo.split(":")[0]);
 
@@ -333,8 +337,6 @@
 			}
 
 			$("#divEntry").hide();
-
-			//console.log("ShowPlayer - serializedPlayer: %s", serializedPlayer);
 
 			var playerProfile = new PlayerProfile(serializedPlayer);
 
@@ -484,7 +486,9 @@
 
 
 		function RefreshRoster() {
-			$("#divRoster").empty();
+			$("#divRosterOffense").empty();
+			$("#divRosterDefense").empty();
+			$("#divRosterUnknown").empty();
 			$("#divOnIce").empty();
 
 			var keyArray = [];
@@ -502,13 +506,18 @@
 
 			keyArray.sort(function (a, b) { return a - b; });
 
-			console.log("RefreshRoster.keyArray.length: %d", keyArray.length);
-			console.log(keyArray);
-
 			$(keyArray).each(function () {
-				var thisPlayer = $("<input type='button' name='btnPlayer' onclick='TogglePlayer(this);'/>").val(this);
+				var infoKey = "player" + this;
+				var serializedPlayer = localStorage.getItem(infoKey);
+				var playerProfile = new PlayerProfile(serializedPlayer);
+				var thisPlayer = $("<input type='button' name='btnPlayer' onclick='TogglePlayer(this);'/>").val(playerProfile.PlayerNumber);
 
-				$("#divRoster").append(thisPlayer);
+				if (playerProfile.PlayerPosition == "O")
+					$("#divRosterOffense").append(thisPlayer);
+				else if (playerProfile.PlayerPosition == "D")
+					$("#divRosterDefense").append(thisPlayer);
+				else
+					$("#divRosterUnknown").append(thisPlayer);
 			});
 
 			var gamePlayers = localStorage.gamePlayers;
@@ -530,7 +539,7 @@
 					btnPlayer.addClass("OnIce");
 				});
 
-				$("#divOnIce").text(gamePlayersArray.toString());
+				$("#divOnIce").text("On Ice: " + gamePlayersArray.toString());
 			}
 		}
 
@@ -557,7 +566,7 @@
 
 			$(btn).toggleClass("OnIce");
 
-			$("#divOnIce").text(playerList.toString());
+			$("#divOnIce").text("On Ice: " + playerList.toString());
 		}
 
 		function ScoreEvent(plusMinus, arrayPlayerNumbers) {
@@ -723,7 +732,11 @@
 				<div class="Content">
 					<div id="divOnIce"></div>
 					<hr />
-					<div id="divRoster"></div>
+					<div id="divRoster">
+						<div id="divRosterOffense" class="PlayerRoster"></div>
+						<div id="divRosterDefense" class="PlayerRoster"></div>
+						<div id="divRosterUnknown" class="PlayerRoster"></div>
+					</div>
 				</div>
 			</div>
 			<div class="Footer">

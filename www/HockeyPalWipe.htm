@@ -1,0 +1,104 @@
+﻿<!DOCTYPE HTML>
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<meta http-equiv="x-ua-compatible" content="ie=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0" />
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+	<meta name="apple-touch-fullscreen" content="yes" />
+	<title>Hockey Pal Wipe</title>
+	<style type="text/css">
+		/* Global Styles */
+		body, div, table
+		{
+		    background-color: transparent;
+		    font-size: 0.9rem;
+		    font-family: tahoma, verdana, arial;
+		    color: navy;
+		}
+		
+		div.Header 
+		{
+		    margin-bottom: 15px;
+		}
+
+		div.Header div.Title
+		{
+		    font-weight: bold;
+		    font-size: 10pt;
+		    display: inline-block;
+		    margin-right: 25px;
+		    color: navy;
+		}
+		
+		div.Header div.Menu
+		{
+		    display: inline-block;
+		}
+
+		div.Header div.Menu a
+		{
+		    background-color: navy;
+		    color: white;
+		    display: inline-block;
+		    padding: 10px 10px;
+		    text-decoration: none;
+		    border-radius: 5px;
+		    border: solid navy 1px;
+		    margin-left: 10px;
+		}
+
+		div.Header div.Menu a:hover
+		{
+		    background-color: white;
+		    color: navy;
+		}
+
+		div.Body 
+		{
+		    display: block;
+		    width: 100%;
+		}
+		
+		input[type=button] 
+		{
+		    min-height: 40px;
+		}
+		
+		input[type=text]
+		{
+		    font-size: 1rem;
+		    padding: 10px 15px;
+		}
+		
+	</style>
+	<script type="text/javascript">
+
+		function WipeData() {
+			localStorage.clear();
+		}
+
+	</script>
+</head>
+<body>
+	<div id="divHockeyLineup">
+		<div>
+			<div class="Header">
+				<div class="Title">Hockey Pal Wipe</div>
+				<div class="Menu">
+					<a href="HockeyPal.htm">Lineup</a>
+				</div>
+				<hr />
+			</div>
+			<div class="Body">
+				<input type="button" id="btnWipeAllData" value="Wipe All Data" onclick="WipeData();" />
+			</div>
+			<div class="Footer">
+				<hr />
+				Copyright &copy; 2018 - Viking Information Services, Inc.
+			</div>
+		</div>
+	</div>
+</body>
+</html>
