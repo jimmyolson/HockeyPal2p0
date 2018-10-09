@@ -18,17 +18,28 @@
 		    color: navy;
 		}
 		
+		hr
+		{
+		    margin-top: 3px;
+		    margin-bottom: 3px;
+		}
+
 		div.Header 
 		{
-		    margin-bottom: 15px;
+		    margin-bottom: 5px;
+		}
+
+		div.Header hr
+		{
+		    margin-top: 3px;
+		    margin-bottom: 3px;
 		}
 
 		div.Header div.Title
 		{
 		    font-weight: bold;
-		    font-size: 10pt;
+		    font-size: 0.9rem;
 		    display: inline-block;
-		    margin-right: 25px;
 		    color: navy;
 		}
 		
@@ -42,11 +53,11 @@
 		    background-color: navy;
 		    color: white;
 		    display: inline-block;
-		    padding: 10px 10px;
+		    padding: 5px 5px;
 		    text-decoration: none;
-		    border-radius: 5px;
+		    border-radius: 3px;
 		    border: solid navy 1px;
-		    margin-left: 10px;
+		    margin-right: 10px;
 		}
 
 		div.Header div.Menu a:hover
@@ -63,7 +74,7 @@
 		
 		input[type=button] 
 		{
-		    min-height: 40px;
+		    min-height: 30px;
 		}
 		
 		input[type=text]
@@ -136,8 +147,8 @@
 		#divOnIce 
 		{
 		    display: block;
-		    min-height: 40px;
-		    font-size: 1.5rem;
+		    min-height: 25px;
+		    font-size: 1.2rem;
 		    font-weight: bold;
 		}
 		
@@ -149,9 +160,12 @@
 		#divRoster input[type=button]
 		{
 		    height: 30px;
-		    width: 30px;
 		    margin: 5px;
-		    border-radius: 5px;
+		    min-width: 30px;
+		    border-radius: 3px;
+		    padding-left: 5px;
+		    padding-right: 5px;
+		    text-align: center;
 		}
 
 		#divRoster input[type=button].OnIce
@@ -166,7 +180,7 @@
 		    border: solid black 1px;
 		    margin: 5px;
 		    min-height: 25px;
-		    border-radius: 5px;
+		    border-radius: 3px;
 		}
 		
 	</style>
@@ -624,13 +638,12 @@
 		}
 
 		function RecordScoringEvent(plusMinus) {
-			var arrayPlayers = [];
+			var gamePlayers = localStorage.gamePlayers;
 
-			$("#ulOnIce li").each(function () {
-				var playerNumber = $.trim($(this).text().split(":")[0]);
+			if (gamePlayers == null || gamePlayers == "")
+				return;
 
-				arrayPlayers.push(playerNumber);
-			});
+			var arrayPlayers = gamePlayers.split(",");
 
 			var scoreEvent = new ScoreEvent(plusMinus, arrayPlayers);
 
@@ -645,6 +658,73 @@
 			currentEventsArray.push(scoreEvent);
 
 			localStorage.setItem("scoreEvents", currentEventsArray);
+
+			$("#divScoreMessage").text(plusMinus == 1 ? "Yay!" : "Sadness").show();
+			$("#divScoreMessage").fadeOut(5000);
+		}
+
+
+	</script>
+	<script type="text/javascript">
+		// swiping code
+
+		var xDown = null;
+		var yDown = null;
+
+		$(document).ready(function () {
+			document.addEventListener('touchstart', handleTouchStart, false);
+			document.addEventListener('touchmove', handleTouchMove, false);
+		});
+
+
+		function handleTouchStart(evt) {
+			xDown = evt.touches[0].clientX;
+			yDown = evt.touches[0].clientY;
+		}
+
+		function handleTouchMove(evt) {
+			if (!xDown || !yDown) {
+				return;
+			}
+
+			var xUp = evt.touches[0].clientX;
+			var yUp = evt.touches[0].clientY;
+
+			var xDiff = xDown - xUp;
+			var yDiff = yDown - yUp;
+
+			if (Math.abs(xDiff) > Math.abs(yDiff)) {/*most significant*/
+				if (xDiff > 0) {
+					SwipeLeft();
+				} else {
+					SwipeRight();
+				}
+			} else {
+				if (yDiff > 0) {
+					/* up swipe */
+				} else {
+					/* down swipe */
+				}
+			}
+			/* reset values */
+			xDown = null;
+			yDown = null;
+		}
+
+		function SwipeLeft() {
+			if ($("#divHockeyLineup:visible").length == 1) {
+				NavigateToGame();
+			} else if ($("#divHockeyGame:visible").length == 1) {
+				NavigateToLineup();
+			}
+		}
+
+		function SwipeRight() {
+			if ($("#divHockeyLineup:visible").length == 1) {
+				NavigateToGame();
+			} else if ($("#divHockeyGame:visible").length == 1) {
+				NavigateToLineup();
+			}
 		}
 
 
@@ -654,11 +734,18 @@
 	<div id="divHockeyLineup">
 		<div>
 			<div class="Header">
-				<div class="Title">Hockey Lineup</div>
-				<div class="Menu">
-					<a href="javascript: NavigateToGame();">Game</a>
-					<a href="javascript: AddNewPlayer()">Add Player</a>
-				</div>
+				<table style="width: 100%;">
+					<tr>
+						<td>
+							<div class="Title">Lineup</div>
+						</td>
+						<td style="text-align: right;">
+							<div class="Menu">
+								<a href="javascript: NavigateToGame();">Game</a>
+							</div>
+						</td>
+					</tr>
+				</table>
 				<hr />
 			</div>
 			<div class="Body">
@@ -667,6 +754,8 @@
 				</div>
 			</div>
 			<div class="Footer">
+				<hr />
+				<input type="button" id="btnAddPlayer" onclick="AddNewPlayer" value="Add Player" />
 				<hr />
 				Copyright &copy; 2018 - Viking Information Services, Inc.
 			</div>
@@ -708,17 +797,27 @@
 	<div id="divHockeyGame" style="display: none;">
 		<div>
 			<div class="Header">
-				<div class="Title">
-					Hockey Game</div>
-				<div class="Menu">
-					<a href="javascript: NavigateToLineup();">Lineup</a>
-				</div>
+				<table style="width: 100%;">
+					<tr>
+						<td style="text-align: left">
+							<div class="Title">Game</div>
+						</td>
+						<td style="text-align: right;">
+							<div class="Menu">
+								<a href="javascript: NavigateToLineup();">Lineup</a>
+							</div>
+						</td>
+					</tr>
+				</table>
 				<hr />
 				<div class="Menu" style="width: 100%;">
 					<table style="width: 100%;">
 						<tr>
 							<td>
 								<input type="button" id="btnScoreGoal" onclick="RecordScoringEvent(1)" value="We Scored" />
+							</td>
+							<td style="text-align: center;">
+								<div id="divScoreMessage"></div>
 							</td>
 							<td style="text-align: right;">
 								<input type="button" id="btnGiveUpGoal" onclick="RecordScoringEvent(-1)" value="They Scored" />
