@@ -79,8 +79,14 @@
 		
 		input[type=text]
 		{
-		    font-size: 1rem;
-		    padding: 10px 15px;
+		    font-size: 0.9rem;
+		    padding: 5px 10px;
+		}
+		
+		input[type=radio]
+		{
+		    height: 20px;
+		    width: 20px;
 		}
 		
 	</style>
@@ -104,7 +110,7 @@
 		#divLineup div.PlayerEntry
 		{
 		    display: block;
-		    padding: 15px 5px;
+		    padding: 5px 5px;
 		    border: solid navy 1px;
 		}
 
@@ -118,7 +124,7 @@
 		{
 		    display: block;
 		    margin-top: 5px;
-		    margin-bottom: 15px;
+		    margin-bottom: 5px;
 		}
 
 		div.PlayerDisplayEntry input[type=button]
@@ -138,8 +144,25 @@
 		{
 		    display: block;
 		    margin-left: 10px;
+		    vertical-align: top;
 		}
 		
+		div.PlayerPositionType 
+		{
+		    display: block;
+		}
+		
+		div.PlayerPositionType label, div.PlayerPositionType input[type=radio]
+		{
+		    font-size: 1rem;
+		    vertical-align: middle;
+		}
+
+		div.PlayerPositionType label
+		{
+		    padding-left: 10px;
+		}
+
 	</style>
 	<style type="text/css">
 		/* Game Styles */
@@ -367,7 +390,7 @@
 			$("#divEntry").insertAfter(divPlayer);
 			$("#txtPlayerNumber").prop("readonly", true);
 			$("#divEntry").show();
-			$("#txtPlayerName").focus();
+			$("#txtPlayerName").focus().select();
 		}
 
 		function UpdatePlayer() {
@@ -427,6 +450,7 @@
 		}
 
 		function CloseEntry() {
+			$("#divEntry").prev()[0].scrollIntoView();
 			$("#divEntry").hide();
 		}
 
@@ -782,9 +806,15 @@
 					Position
 				</div>
 				<div class="PlayerDisplayValue">
-					<input type="radio" name="PlayerPosition" id="rbOffense" value="O" /><label for="rbOffense">Offense</label><br />
-					<input type="radio" name="PlayerPosition" id="rbDefense" value="D" /><label for="rbOffense">Defense</label><br />
-					<input type="radio" name="PlayerPosition" id="rbUnknown" value="" /><label for="rbOffense">Both/Unknown</label>
+					<div class="PlayerPositionType">
+						<input type="radio" name="PlayerPosition" id="rbOffense" value="O" /><label for="rbOffense">Offense</label>
+					</div>
+					<div class="PlayerPositionType">
+						<input type="radio" name="PlayerPosition" id="rbDefense" value="D" /><label for="rbDefense">Defense</label><br />
+					</div>
+					<div class="PlayerPositionType">
+						<input type="radio" name="PlayerPosition" id="rbUnknown" value="" /><label for="rbUnknown">Both/Unknown</label>
+					</div>
 				</div>
 			</div>
 			<div class="PlayerDisplayEntry">
