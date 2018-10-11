@@ -207,6 +207,24 @@
 		}
 		
 	</style>
+	<style type="text/css">
+		/* Details */
+		
+		#divDetailsContainer table.ScoreEvents 
+		{
+		    margin-top: 10px;
+		    margin-bottom: 20px;
+		    margin-left: 5px;
+		    border-collapse: collapse;
+		}
+
+		table.ScoreEvents td, table.ScoreEvents th
+		{
+		    padding: 2px 5px;
+		    border: solid navy 1px;
+		    text-align: center;
+		}
+	</style>
 	<script src="jquery-3.1.1.min.js" type="text/javascript"></script>
 	<script type="text/javascript">
 		// objects/classes
@@ -278,6 +296,62 @@
 			else if (playerNumber != null && playerName == null)
 				this.inflate(playerNumber);
 		}
+
+		function ScoreEvent( plusMinus, arrayPlayerNumbers ) {
+		    this.PlusMinus = plusMinus;
+		    this.PlayerNumbers = arrayPlayerNumbers;
+
+		    this.toString = function () {
+		        return this.PlusMinus.toString() + "!" + this.PlayerNumbers.toString().replace( /,/g, ";" );
+		    }
+
+		    this.inflate = function ( serializedScoreEvent ) {
+		        this.PlusMinus = 0;
+		        this.PlayerNumbers = [];
+
+		        var eventParts = serializedScoreEvent.split( "!" );
+
+		        if ( eventParts.length !== 2 ) {
+		            alert( "Failed to deserialize a ScoreEvent" );
+		            return this;
+		        }
+
+		        var plusMinus = parseInt( eventParts[0] );
+
+		        if ( isNaN( plusMinus ) || ( plusMinus !== -1 && plusMinus !== 1 ) ) {
+		            alert( "Failed to deserialize a ScoreEvent - Invalid Plus/Minus" );
+		            return this;
+		        }
+
+		        if ( $.trim( eventParts[1] ) === "" ) {
+		            alert( "Failed to deserialize a ScoreEvent - Empty Players List" );
+		            return this;
+		        }
+
+		        var playerArray = eventParts[1].split( ";" );
+
+		        this.PlusMinus = plusMinus;
+		        this.PlayerNumbers = playerArray;
+
+		        return this;
+		    }
+		}
+
+		ScoreEvent.ToList = function ( scoreEventsString ) {
+		    var eventsArray = scoreEventsString.split( "," );
+
+		    var finalList = [];
+
+		    $( eventsArray ).each( function () {
+		        var scoreEvent = new ScoreEvent().inflate( this );
+
+		        finalList.push( scoreEvent );
+		    } );
+
+		    return finalList;
+		}
+
+
 
 	</script>
 	<script type="text/javascript">
@@ -500,13 +574,43 @@
 
 		function NavigateToGame() {
 			RefreshRoster();
-			$("#divHockeyLineup").slideToggle(500);
+
+			if ($("#divHockeyLineup").is(":visible")) {
+				$("#divHockeyLineup").slideToggle(500);
+			}
+
+			if ($("#divDetails").is(":visible")) {
+				$("#divDetails").slideToggle(500);
+			}
+
 			$("#divHockeyGame").slideToggle(500);
 		}
 
 		function NavigateToLineup() {
-			$("#divHockeyGame").slideToggle(500);
+			if ($("#divHockeyGame").is(":visible")) {
+				$("#divHockeyGame").slideToggle(500);
+			}
+
+			if ($("#divDetails").is(":visible")) {
+				$("#divDetails").slideToggle(500);
+			}
+
 			$("#divHockeyLineup").slideToggle(500);
+		}
+
+		function NavigateToDetails() {
+
+			BuildDetails();
+
+			if ($("#divHockeyLineup").is(":visible")) {
+				$("#divHockeyLineup").slideToggle(500);
+			}
+
+			if ($("#divHockeyGame").is(":visible")) {
+				$("#divHockeyGame").slideToggle(500);
+			}
+
+			$("#divDetails").slideToggle(500);
 		}
 
 	</script>
@@ -518,6 +622,7 @@
 				return;
 
 			localStorage.removeItem("gamePlayers");
+			localStorage.removeItem("scoreEvents");
 
 			RefreshRoster();
 		}
@@ -607,60 +712,6 @@
 			$("#divOnIce").text("On Ice: " + playerList.toString());
 		}
 
-		function ScoreEvent(plusMinus, arrayPlayerNumbers) {
-			this.PlusMinus = plusMinus;
-			this.PlayerNumbers = arrayPlayerNumbers;
-
-			this.toString = function () {
-				return this.PlusMinus.toString() + "!" + this.PlayerNumbers.toString().replace(/,/g, ";");
-			}
-
-			this.inflate = function (serializedScoreEvent) {
-				this.PlusMinus = 0;
-				this.PlayerNumbers = [];
-
-				var eventParts = serializedScoreEvent.split("!");
-
-				if (eventParts.length != 2) {
-					alert("Failed to deserialize a ScoreEvent");
-					return;
-				}
-
-				var plusMinus = parseInt(eventParts[0]);
-
-				if (isNaN(plusMinus) || (plusMinus != -1 && plusMinus != 1)) {
-					alert("Failed to deserialize a ScoreEvent - Invalid Plus/Minus");
-					return;
-				}
-
-				if ($.trim(eventParts[1]) === "") {
-					alert("Failed to deserialize a ScoreEvent - Empty Players List");
-					return;
-				}
-
-				var playerArray = eventParts[1].split(";");
-
-				this.PlusMinus = plusMinus;
-				this.PlayerNumbers = playerArray;
-
-				return this;
-			}
-		}
-
-		ScoreEvent.ToList = function (scoreEventsString) {
-			var eventsArray = scoreEventsString.split(",");
-
-			var finalList = [];
-
-			$(eventsArray).each(function () {
-				var scoreEvent = new ScoreEvent().inflate(this);
-
-				finalList.push(scoreEvent);
-			});
-
-			return finalList;
-		}
-
 		function RecordScoringEvent(plusMinus) {
 			var gamePlayers = localStorage.gamePlayers;
 
@@ -696,8 +747,8 @@
 		var yDown = null;
 
 		$(document).ready(function () {
-			document.addEventListener('touchstart', handleTouchStart, false);
-			document.addEventListener('touchmove', handleTouchMove, false);
+			document.addEventListener("touchstart", handleTouchStart, false);
+			document.addEventListener("touchmove", handleTouchMove, false);
 		});
 
 
@@ -753,6 +804,46 @@
 
 
 	</script>
+	<script type="text/javascript">
+		// Details
+
+		function BuildDetails() {
+			$("#divDetailsContainer").empty();
+
+			var currentEvents = localStorage.scoreEvents;
+
+			console.log("currentEvents: %s", currentEvents);
+
+			var scoringEvents = ScoreEvent.ToList(currentEvents);
+
+			if (scoringEvents.length == 0) {
+				$("#divDetailsContainer").text("No Scoring Events");
+				return;
+			}
+
+			var tblScore = $("<table class='ScoreEvents' />");
+			var trHeader = $("<tr/>");
+
+			trHeader.append($("<th/>").text("+/-"));
+			trHeader.append($("<th/>").text("Players"));
+
+			tblScore.append(trHeader);
+
+			$(scoringEvents).each(function () {
+				scoringEvent = this;
+
+				var tr = $("<tr/>");
+
+				tr.append($("<td/>").text(this.PlusMinus));
+				tr.append($("<td/>").text(this.PlayerNumbers.toString()));
+				tblScore.append(tr);
+			});
+
+			$("#divDetailsContainer").append(tblScore);
+		}
+
+	</script>
+
 </head>
 <body>
 	<div id="divHockeyLineup">
@@ -766,6 +857,7 @@
 						<td style="text-align: right;">
 							<div class="Menu">
 								<a href="javascript: NavigateToGame();">Game</a>
+								<a href="javascript: NavigateToDetails();">Details</a>
 							</div>
 						</td>
 					</tr>
@@ -835,6 +927,7 @@
 						<td style="text-align: right;">
 							<div class="Menu">
 								<a href="javascript: NavigateToLineup();">Lineup</a>
+								<a href="javascript: NavigateToDetails();">Details</a>
 							</div>
 						</td>
 					</tr>
@@ -871,6 +964,35 @@
 			<div class="Footer">
 				<hr />
 				<input type="button" id="btnResetGame" onclick="ResetGame();" value="Reset Game" />
+				<hr />
+				Copyright &copy; 2018 - Viking Information Services, Inc.
+			</div>
+		</div>
+	</div>
+	<div id="divDetails" style="display: none;">
+		<div>
+			<div class="Header">
+				<table style="width: 100%;">
+					<tr>
+						<td style="text-align: left">
+							<div class="Title">Details</div>
+						</td>
+						<td style="text-align: right;">
+							<div class="Menu">
+								<a href="javascript: NavigateToLineup();">Lineup</a>
+								<a href="javascript: NavigateToGame();">Game</a>
+							</div>
+						</td>
+					</tr>
+				</table>
+				<hr />
+			</div>
+			<div class="Body">
+				<div class="Content">
+					<div id="divDetailsContainer"></div>
+				</div>
+			</div>
+			<div class="Footer">
 				<hr />
 				Copyright &copy; 2018 - Viking Information Services, Inc.
 			</div>
