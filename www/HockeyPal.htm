@@ -89,6 +89,33 @@
 		    width: 20px;
 		}
 		
+        #divDropdownMenu {
+            display: block;
+            min-width: 100px;
+            background-color: navy;
+            color: white;
+            position: absolute;
+            top: 40px;
+            min-height: 50px;
+            right: 20px;
+            border-radius: 5px;
+        }
+
+        #divDropdownMenu a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            padding: 5px;
+            border: solid 1px white;
+            border-radius: 5px;
+            margin: 5px 3px;
+        }
+
+        #divDropdownMenu a:hover {
+            color: navy;
+            background-color: white;
+        }
+
 	</style>
 	<style type="text/css">
 
@@ -260,6 +287,8 @@
 				this.PlayerNumber = parseInt(playerNumber);
 				this.PlayerName = playerName;
 				this.PlayerPosition = playerPosition;
+
+			    return this;
 			};
 
 			this.inflate = function (serializedPlayerProfile) {
@@ -275,7 +304,9 @@
 				if (playerProfileParts.length != 3)
 					throw new Error("Cannot inflate PlayerProfile - invalid serialized data (did not find 3 parts): " + serializedPlayerProfile);
 
-				this.initialize(playerProfileParts[0], playerProfileParts[1], playerProfileParts[2]);
+				this.initialize( playerProfileParts[0], playerProfileParts[1], playerProfileParts[2] );
+
+			    return this;
 			}
 
 			this.label = function () {
@@ -342,15 +373,58 @@
 
 		    var finalList = [];
 
-		    $( eventsArray ).each( function () {
-		        var scoreEvent = new ScoreEvent().inflate( this );
+		    $(eventsArray).each(function() {
+		        var scoreEvent = new ScoreEvent().inflate(this);
 
-		        finalList.push( scoreEvent );
-		    } );
+		        finalList.push(scoreEvent);
+		    });
 
 		    return finalList;
 		}
 
+	    function Game(title, optScoreEvents)
+	    {
+	        this.Title = "";
+	        this.ScoreEvents = [];
+
+	        this.initialize = function(gameTitle, scoreEvents)
+	        {
+	            this.Title = gameTitle;
+	            this.ScoreEvents = scoreEvents;
+
+	            return this;
+	        };
+
+	        this.inflate = function(serializedGame)
+	        {
+	            if (serializedGame == null || serializedGame === "")
+	                throw new Error("Cannot Create Game - missing serialized data");
+
+	            var majorParts = serializedGame.split( "^" );
+
+	            if (majorParts.length !== 2)
+	                throw new Error( "Cannot Create Game - ill-formed serialized data (expecting 2 major parts)" );
+
+	            var arrayScoreEvents = majorParts[1].split("$");
+
+	            this.initialize(majorParts[0], arrayScoreEvents);
+
+	            return this;
+	        }
+
+	        this.AddScoreEvent = function(scoreEvent)
+	        {
+	            this.ScoreEvents.push(scoreEvent);
+	        };
+
+	        this.toString = function()
+	        {
+	            var scoreEventsList = this.ScoreEvents.toString().replace(/,/g, "$");
+	            return (this.Title || "") + "^" + (scoreEventsList || "");
+	        };
+
+	        this.initialize( title, optScoreEvents );
+        }
 
 
 	</script>
@@ -572,8 +646,11 @@
 	<script type="text/javascript">
 		// intra-screen navigation
 
-		function NavigateToGame() {
-			RefreshRoster();
+		function NavigateToGame()
+		{
+		    $("#divDropdownMenu").hide();
+
+		    RefreshRoster();
 
 			if ($("#divHockeyLineup").is(":visible")) {
 				$("#divHockeyLineup").slideToggle(500);
@@ -586,8 +663,11 @@
 			$("#divHockeyGame").slideToggle(500);
 		}
 
-		function NavigateToLineup() {
-			if ($("#divHockeyGame").is(":visible")) {
+		function NavigateToLineup()
+		{
+		    $("#divDropdownMenu").hide();
+
+		    if ( $( "#divHockeyGame" ).is( ":visible" ) ) {
 				$("#divHockeyGame").slideToggle(500);
 			}
 
@@ -598,7 +678,9 @@
 			$("#divHockeyLineup").slideToggle(500);
 		}
 
-		function NavigateToDetails() {
+		function NavigateToDetails()
+		{
+		    $("#divDropdownMenu").hide();
 
 			BuildDetails();
 
@@ -715,7 +797,7 @@
 		function RecordScoringEvent(plusMinus) {
 			var gamePlayers = localStorage.gamePlayers;
 
-			if (gamePlayers == null || gamePlayers == "")
+			if (gamePlayers == null || gamePlayers === "")
 				return;
 
 			var arrayPlayers = gamePlayers.split(",");
@@ -734,10 +816,9 @@
 
 			localStorage.setItem("scoreEvents", currentEventsArray);
 
-			$("#divScoreMessage").text(plusMinus == 1 ? "Yay!" : "Sadness").show();
+			$("#divScoreMessage").text(plusMinus === 1 ? "Yay!" : "Sadness").show();
 			$("#divScoreMessage").fadeOut(5000);
 		}
-
 
 	</script>
 	<script type="text/javascript">
@@ -855,10 +936,9 @@
 							<div class="Title">Lineup</div>
 						</td>
 						<td style="text-align: right;">
-							<div class="Menu">
-								<a href="javascript: NavigateToGame();">Game</a>
-								<a href="javascript: NavigateToDetails();">Details</a>
-							</div>
+						    <div class="Menu">
+						        <a href="javascript: $('#divDropdownMenu').toggle();">[M]</a>
+						    </div>
 						</td>
 					</tr>
 				</table>
@@ -969,34 +1049,39 @@
 			</div>
 		</div>
 	</div>
-	<div id="divDetails" style="display: none;">
-		<div>
-			<div class="Header">
-				<table style="width: 100%;">
-					<tr>
-						<td style="text-align: left">
-							<div class="Title">Details</div>
-						</td>
-						<td style="text-align: right;">
-							<div class="Menu">
-								<a href="javascript: NavigateToLineup();">Lineup</a>
-								<a href="javascript: NavigateToGame();">Game</a>
-							</div>
-						</td>
-					</tr>
-				</table>
-				<hr />
-			</div>
-			<div class="Body">
-				<div class="Content">
-					<div id="divDetailsContainer"></div>
-				</div>
-			</div>
-			<div class="Footer">
-				<hr />
-				Copyright &copy; 2018 - Viking Information Services, Inc.
-			</div>
-		</div>
-	</div>
+    <div id="divDetails" style="display: none;">
+        <div>
+            <div class="Header">
+                <table style="width: 100%;">
+                    <tr>
+                        <td style="text-align: left">
+                            <div class="Title">Details</div>
+                        </td>
+                        <td style="text-align: right;">
+                            <div class="Menu">
+                                <a href="javascript: NavigateToLineup();">Lineup</a>
+                                <a href="javascript: NavigateToGame();">Game</a>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+                <hr />
+            </div>
+            <div class="Body">
+                <div class="Content">
+                    <div id="divDetailsContainer"></div>
+                </div>
+            </div>
+            <div class="Footer">
+                <hr />
+                Copyright &copy; 2018 - Viking Information Services, Inc.
+            </div>
+        </div>
+    </div>
+    <div id="divDropdownMenu" style="display: none;">
+        <a href="javascript: NavigateToLineup();">Lineup</a>
+        <a href="javascript: NavigateToGame();">Game</a>
+        <a href="javascript: NavigateToDetails();">Details</a>
+    </div>
 </body>
 </html>
