@@ -652,13 +652,16 @@
 
 		    RefreshRoster();
 
-			if ($("#divHockeyLineup").is(":visible")) {
-				$("#divHockeyLineup").slideToggle(500);
-			}
+		    if ($("#divHockeyGame").is(":visible"))
+		        return;
 
-			if ($("#divDetails").is(":visible")) {
+		    if ($("#divHockeyLineup").is(":visible"))
+		        $("#divHockeyLineup").slideToggle(500);
+
+			if ($("#divDetails").is(":visible"))
 				$("#divDetails").slideToggle(500);
-			}
+
+		    $("#divTitle").text("Game");
 
 			$("#divHockeyGame").slideToggle(500);
 		}
@@ -667,32 +670,38 @@
 		{
 		    $("#divDropdownMenu").hide();
 
-		    if ( $( "#divHockeyGame" ).is( ":visible" ) ) {
-				$("#divHockeyGame").slideToggle(500);
-			}
+		    if ($("#divHockeyLineup").is(":visible"))
+		        return;
 
-			if ($("#divDetails").is(":visible")) {
+		    if ($("#divHockeyGame").is(":visible"))
+		        $("#divHockeyGame").slideToggle(500);
+
+		    if ($("#divDetails").is(":visible"))
 				$("#divDetails").slideToggle(500);
-			}
 
-			$("#divHockeyLineup").slideToggle(500);
+		    $("#divTitle").text("Lineup");
+
+		    $( "#divHockeyLineup" ).slideToggle( 500 );
 		}
 
 		function NavigateToDetails()
 		{
 		    $("#divDropdownMenu").hide();
 
-			BuildDetails();
+		    BuildDetails();
 
-			if ($("#divHockeyLineup").is(":visible")) {
+		    if ($("#divDetails").is(":visible"))
+		        return;
+
+			if ($("#divHockeyLineup").is(":visible"))
 				$("#divHockeyLineup").slideToggle(500);
-			}
 
-			if ($("#divHockeyGame").is(":visible")) {
+			if ($("#divHockeyGame").is(":visible"))
 				$("#divHockeyGame").slideToggle(500);
-			}
 
-			$("#divDetails").slideToggle(500);
+		    $("#divTitle").text("Details");
+
+		    $("#divDetails").slideToggle(500);
 		}
 
 	</script>
@@ -927,161 +936,129 @@
 
 </head>
 <body>
-	<div id="divHockeyLineup">
-		<div>
-			<div class="Header">
-				<table style="width: 100%;">
-					<tr>
-						<td>
-							<div class="Title">Lineup</div>
-						</td>
-						<td style="text-align: right;">
-						    <div class="Menu">
-						        <a href="javascript: $('#divDropdownMenu').toggle();">[M]</a>
-						    </div>
-						</td>
-					</tr>
-				</table>
-				<hr />
-			</div>
-			<div class="Body">
-				<div class="Content">
-					<div id="divLineup"></div>
-				</div>
-			</div>
-			<div class="Footer">
-				<hr />
-				<input type="button" id="btnAddPlayer" onclick="AddNewPlayer" value="Add Player" />
-				<hr />
-				Copyright &copy; 2018 - Viking Information Services, Inc.
-			</div>
-		</div>
-		<div id="divEntry" style="display: none;">
-			<div class="PlayerDisplayEntry">
-				<div class="PlayerDisplayPrompt">
-					Player #
-				</div>
-				<div class="PlayerDisplayValue">
-					<input type="text" id="txtPlayerNumber" style="width: 50px;" readonly="readonly" />
-				</div>
-			</div>
-			<div class="PlayerDisplayEntry">
-				<div class="PlayerDisplayPrompt">
-					Name
-				</div>
-				<div class="PlayerDisplayValue">
-					<input type="text" id="txtPlayerName" style="width: 150px;" />
-				</div>
-			</div>
-			<div class="PlayerDisplayEntry">
-				<div class="PlayerDisplayPrompt">
-					Position
-				</div>
-				<div class="PlayerDisplayValue">
-					<div class="PlayerPositionType">
-						<input type="radio" name="PlayerPosition" id="rbOffense" value="O" /><label for="rbOffense">Offense</label>
-					</div>
-					<div class="PlayerPositionType">
-						<input type="radio" name="PlayerPosition" id="rbDefense" value="D" /><label for="rbDefense">Defense</label><br />
-					</div>
-					<div class="PlayerPositionType">
-						<input type="radio" name="PlayerPosition" id="rbUnknown" value="" /><label for="rbUnknown">Both/Unknown</label>
-					</div>
-				</div>
-			</div>
-			<div class="PlayerDisplayEntry">
-				<input type="button" id="btnUpdate" value="Update" onclick="UpdatePlayer();" />
-				<input type="button" id="btnClose" value="Close" onclick="CloseEntry();" />
-				<input type="button" id="btnDelete" value="Delete" onclick="DeleteEntry();" />
-			</div>
-		</div>
-	</div>
-	<div id="divHockeyGame" style="display: none;">
-		<div>
-			<div class="Header">
-				<table style="width: 100%;">
-					<tr>
-						<td style="text-align: left">
-							<div class="Title">Game</div>
-						</td>
-						<td style="text-align: right;">
-							<div class="Menu">
-								<a href="javascript: NavigateToLineup();">Lineup</a>
-								<a href="javascript: NavigateToDetails();">Details</a>
-							</div>
-						</td>
-					</tr>
-				</table>
-				<hr />
-				<div class="Menu" style="width: 100%;">
-					<table style="width: 100%;">
-						<tr>
-							<td>
-								<input type="button" id="btnScoreGoal" onclick="RecordScoringEvent(1)" value="We Scored" />
-							</td>
-							<td style="text-align: center;">
-								<div id="divScoreMessage"></div>
-							</td>
-							<td style="text-align: right;">
-								<input type="button" id="btnGiveUpGoal" onclick="RecordScoringEvent(-1)" value="They Scored" />
-							</td>
-						</tr>
-					</table>
-				</div>
-				<hr />
-			</div>
-			<div class="Body">
-				<div class="Content">
-					<div id="divOnIce"></div>
-					<hr />
-					<div id="divRoster">
-						<div id="divRosterOffense" class="PlayerRoster"></div>
-						<div id="divRosterDefense" class="PlayerRoster"></div>
-						<div id="divRosterUnknown" class="PlayerRoster"></div>
-					</div>
-				</div>
-			</div>
-			<div class="Footer">
-				<hr />
-				<input type="button" id="btnResetGame" onclick="ResetGame();" value="Reset Game" />
-				<hr />
-				Copyright &copy; 2018 - Viking Information Services, Inc.
-			</div>
-		</div>
-	</div>
-    <div id="divDetails" style="display: none;">
+<div id="divPage">
+    <div class="Header">
+        <table style="width: 100%;">
+            <tr>
+                <td>
+                    <div id="divTitle" class="Title">Lineup</div>
+                </td>
+                <td style="text-align: right;">
+                    <div class="Menu">
+                        <a href="javascript: $('#divDropdownMenu').toggle();">[M]</a>
+                    </div>
+                </td>
+            </tr>
+        </table>
+        <hr />
+    </div>
+    <div id="divHockeyLineup">
+        <div>
+            <div class="Body">
+                <div class="Content">
+                    <div id="divLineup"></div>
+                </div>
+            </div>
+            <div class="Footer">
+                <hr />
+                <input type="button" id="btnAddPlayer" onclick="AddNewPlayer" value="Add Player" />
+            </div>
+        </div>
+        <div id="divEntry" style="display: none;">
+            <div class="PlayerDisplayEntry">
+                <div class="PlayerDisplayPrompt">
+                    Player #
+                </div>
+                <div class="PlayerDisplayValue">
+                    <input type="text" id="txtPlayerNumber" style="width: 50px;" readonly="readonly" />
+                </div>
+            </div>
+            <div class="PlayerDisplayEntry">
+                <div class="PlayerDisplayPrompt">
+                    Name
+                </div>
+                <div class="PlayerDisplayValue">
+                    <input type="text" id="txtPlayerName" style="width: 150px;" />
+                </div>
+            </div>
+            <div class="PlayerDisplayEntry">
+                <div class="PlayerDisplayPrompt">
+                    Position
+                </div>
+                <div class="PlayerDisplayValue">
+                    <div class="PlayerPositionType">
+                        <input type="radio" name="PlayerPosition" id="rbOffense" value="O" /><label for="rbOffense">Offense</label>
+                    </div>
+                    <div class="PlayerPositionType">
+                        <input type="radio" name="PlayerPosition" id="rbDefense" value="D" /><label for="rbDefense">Defense</label><br />
+                    </div>
+                    <div class="PlayerPositionType">
+                        <input type="radio" name="PlayerPosition" id="rbUnknown" value="" /><label for="rbUnknown">Both/Unknown</label>
+                    </div>
+                </div>
+            </div>
+            <div class="PlayerDisplayEntry">
+                <input type="button" id="btnUpdate" value="Update" onclick="UpdatePlayer();" />
+                <input type="button" id="btnClose" value="Close" onclick="CloseEntry();" />
+                <input type="button" id="btnDelete" value="Delete" onclick="DeleteEntry();" />
+            </div>
+        </div>
+    </div>
+    <div id="divHockeyGame" style="display: none;">
         <div>
             <div class="Header">
-                <table style="width: 100%;">
-                    <tr>
-                        <td style="text-align: left">
-                            <div class="Title">Details</div>
-                        </td>
-                        <td style="text-align: right;">
-                            <div class="Menu">
-                                <a href="javascript: NavigateToLineup();">Lineup</a>
-                                <a href="javascript: NavigateToGame();">Game</a>
-                            </div>
-                        </td>
-                    </tr>
-                </table>
+                <div class="Menu" style="width: 100%;">
+                    <table style="width: 100%;">
+                        <tr>
+                            <td>
+                                <input type="button" id="btnScoreGoal" onclick="RecordScoringEvent(1)" value="We Scored" />
+                            </td>
+                            <td style="text-align: center;">
+                                <div id="divScoreMessage"></div>
+                            </td>
+                            <td style="text-align: right;">
+                                <input type="button" id="btnGiveUpGoal" onclick="RecordScoringEvent(-1)" value="They Scored" />
+                            </td>
+                        </tr>
+                    </table>
+                </div>
                 <hr />
             </div>
+            <div class="Body">
+                <div class="Content">
+                    <div id="divOnIce"></div>
+                    <hr />
+                    <div id="divRoster">
+                        <div id="divRosterOffense" class="PlayerRoster"></div>
+                        <div id="divRosterDefense" class="PlayerRoster"></div>
+                        <div id="divRosterUnknown" class="PlayerRoster"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="Footer">
+                <hr />
+                <input type="button" id="btnResetGame" onclick="ResetGame();" value="Reset Game" />
+            </div>
+        </div>
+    </div>
+    <div id="divDetails" style="display: none;">
+        <div>
             <div class="Body">
                 <div class="Content">
                     <div id="divDetailsContainer"></div>
                 </div>
             </div>
-            <div class="Footer">
-                <hr />
-                Copyright &copy; 2018 - Viking Information Services, Inc.
-            </div>
         </div>
     </div>
-    <div id="divDropdownMenu" style="display: none;">
-        <a href="javascript: NavigateToLineup();">Lineup</a>
-        <a href="javascript: NavigateToGame();">Game</a>
-        <a href="javascript: NavigateToDetails();">Details</a>
+    <div class="Footer">
+        <hr />
+        Copyright &copy; 2018 - Viking Information Services, Inc.
     </div>
+</div>
+<div id="divDropdownMenu" style="display: none;">
+    <a href="javascript: NavigateToLineup();">Lineup</a>
+    <a href="javascript: NavigateToGame();">Game</a>
+    <a href="javascript: NavigateToDetails();">Details</a>
+</div>
 </body>
 </html>
