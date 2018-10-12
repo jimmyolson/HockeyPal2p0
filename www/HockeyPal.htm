@@ -1,938 +1,1197 @@
 ﻿<!DOCTYPE HTML>
 <html>
 <head>
-    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-	<meta http-equiv="x-ua-compatible" content="ie=edge" />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0" />
-	<meta name="apple-mobile-web-app-capable" content="yes" />
-	<meta name="apple-mobile-web-app-status-bar-style" content="default" />
-	<meta name="apple-touch-fullscreen" content="yes" />
-	<title>Hockey Pal</title>
-	<style type="text/css">
+<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+<meta http-equiv="x-ua-compatible" content="ie=edge"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="default"/>
+<meta name="apple-touch-fullscreen" content="yes"/>
+<title>Hockey Pal</title>
+<style type="text/css">
 		/* Global Styles */
-		body, div, table
-		{
-		    background-color: transparent;
-		    font-size: 0.9rem;
-		    font-family: tahoma, verdana, arial;
-		    color: navy;
-		}
-		
-		hr
-		{
-		    margin-top: 3px;
-		    margin-bottom: 3px;
-		}
+    body, div, table {
+        background-color: transparent;
+        font-size: 0.9rem;
+        font-family: tahoma, verdana, arial;
+        color: navy;
+    }
 
-		div.Header 
-		{
-		    margin-bottom: 5px;
-		}
+    hr {
+        margin-top: 3px;
+        margin-bottom: 3px;
+    }
 
-		div.Header hr
-		{
-		    margin-top: 3px;
-		    margin-bottom: 3px;
-		}
+    div.Header { margin-bottom: 5px; }
 
-		div.Header div.Title
-		{
-		    font-weight: bold;
-		    font-size: 0.9rem;
-		    display: inline-block;
-		    color: navy;
-		}
-		
-		div.Header div.Menu
-		{
-		    display: inline-block;
-		}
+    div.Header hr {
+        margin-top: 3px;
+        margin-bottom: 3px;
+    }
 
-		div.Header div.Menu a
-		{
-		    background-color: navy;
-		    color: white;
-		    display: inline-block;
-		    padding: 5px 5px;
-		    text-decoration: none;
-		    border-radius: 3px;
-		    border: solid navy 1px;
-		    margin-right: 10px;
-		}
+    div.Header div.Title {
+        font-weight: bold;
+        font-size: 0.9rem;
+        display: inline-block;
+        color: navy;
+    }
 
-		div.Header div.Menu a:hover
-		{
-		    background-color: white;
-		    color: navy;
-		}
+    div.Header div.Menu { display: inline-block; }
 
-		div.Body 
-		{
-		    display: block;
-		    width: 100%;
-		}
-		
-		input[type=button] 
-		{
-		    min-height: 30px;
-		}
-		
-		input[type=text]
-		{
-		    font-size: 0.9rem;
-		    padding: 5px 10px;
-		}
-		
-		input[type=radio]
-		{
-		    height: 20px;
-		    width: 20px;
-		}
-		
-        #divDropdownMenu {
-            display: block;
-            min-width: 100px;
-            background-color: navy;
-            color: white;
-            position: absolute;
-            top: 40px;
-            min-height: 50px;
-            right: 20px;
-            border-radius: 5px;
-        }
+    div.Header div.Menu a {
+        background-color: navy;
+        color: white;
+        display: inline-block;
+        padding: 5px 5px;
+        text-decoration: none;
+        border-radius: 3px;
+        border: solid navy 1px;
+        margin-right: 10px;
+    }
 
-        #divDropdownMenu a {
-            display: block;
-            color: white;
-            text-decoration: none;
-            padding: 5px;
-            border: solid 1px white;
-            border-radius: 5px;
-            margin: 5px 3px;
-        }
+    div.Header div.Menu a:hover {
+        background-color: white;
+        color: navy;
+    }
 
-        #divDropdownMenu a:hover {
-            color: navy;
-            background-color: white;
-        }
+    div.Body {
+        display: block;
+        width: 100%;
+    }
 
-	</style>
-	<style type="text/css">
+    input[type=button] { min-height: 30px; }
+
+    input[type=text] {
+        font-size: 0.9rem;
+        padding: 5px 10px;
+    }
+
+    input[type=radio] {
+        height: 20px;
+        width: 20px;
+    }
+
+    #divDropdownMenu {
+        display: block;
+        min-width: 100px;
+        background-color: navy;
+        color: white;
+        position: absolute;
+        top: 40px;
+        min-height: 50px;
+        right: 20px;
+        border-radius: 5px;
+    }
+
+    #divDropdownMenu a {
+        display: block;
+        color: white;
+        text-decoration: none;
+        padding: 5px;
+        border: solid 1px white;
+        border-radius: 5px;
+        margin: 5px 3px;
+    }
+
+    #divDropdownMenu a:hover {
+        color: navy;
+        background-color: white;
+    }
+
+</style>
+<style type="text/css">
 
 		/* Lineup Styles */
 
-		#divEntry 
-		{
-		    display: block;
-		    width: 100%;
-		    padding: 10px 15px;
-		}
-		
-		#divLineup 
-		{
-		    display: block;
-		    width: 100%;
-		}
-		
-		#divLineup div.PlayerEntry
-		{
-		    display: block;
-		    padding: 5px 5px;
-		    border: solid navy 1px;
-		}
+    #divEntry {
+        display: block;
+        width: 100%;
+        padding: 10px 15px;
+    }
 
-		#divLineup div.PlayerEntry:hover
-		{
-		    background-color: navy;
-		    color: white;
-		}
-		
-		div.PlayerDisplayEntry
-		{
-		    display: block;
-		    margin-top: 5px;
-		    margin-bottom: 5px;
-		}
+    #divLineup {
+        display: block;
+        width: 100%;
+    }
 
-		div.PlayerDisplayEntry input[type=button]
-		{
-		    padding-left: 25px;
-		    padding-right: 25px;
-		    margin-right: 25px;
-		}
+    #divLineup div.PlayerEntry {
+        display: block;
+        padding: 5px 5px;
+        border: solid navy 1px;
+    }
 
-		div.PlayerDisplayPrompt
-		{
-		    display: block;
-		    font-style: italic;
-		}
-		
-		div.PlayerDisplayValue
-		{
-		    display: block;
-		    margin-left: 10px;
-		    vertical-align: top;
-		}
-		
-		div.PlayerPositionType 
-		{
-		    display: block;
-		}
-		
-		div.PlayerPositionType label, div.PlayerPositionType input[type=radio]
-		{
-		    font-size: 1rem;
-		    vertical-align: middle;
-		}
+    #divLineup div.PlayerEntry:hover {
+        background-color: navy;
+        color: white;
+    }
 
-		div.PlayerPositionType label
-		{
-		    padding-left: 10px;
-		}
+    div.PlayerDisplayEntry {
+        display: block;
+        margin-top: 5px;
+        margin-bottom: 5px;
+    }
 
-	</style>
-	<style type="text/css">
+    div.PlayerDisplayEntry input[type=button] {
+        padding-left: 25px;
+        padding-right: 25px;
+        margin-right: 25px;
+    }
+
+    div.PlayerDisplayPrompt {
+        display: block;
+        font-style: italic;
+    }
+
+    div.PlayerDisplayValue {
+        display: block;
+        margin-left: 10px;
+        vertical-align: top;
+    }
+
+    div.PlayerPositionType { display: block; }
+
+    div.PlayerPositionType label, div.PlayerPositionType input[type=radio] {
+        font-size: 1rem;
+        vertical-align: middle;
+    }
+
+    div.PlayerPositionType label { padding-left: 10px; }
+
+</style>
+<style type="text/css">
 		/* Game Styles */
 
-		#divOnIce 
-		{
-		    display: block;
-		    min-height: 25px;
-		    font-size: 1.2rem;
-		    font-weight: bold;
-		}
-		
-		#divRoster
-		{
-		    display: block;
-		}
-		
-		#divRoster input[type=button]
-		{
-		    height: 30px;
-		    margin: 5px;
-		    min-width: 30px;
-		    border-radius: 3px;
-		    padding-left: 5px;
-		    padding-right: 5px;
-		    text-align: center;
-		}
+    #divOnIce {
+        display: block;
+        min-height: 25px;
+        font-size: 1.2rem;
+        font-weight: bold;
+    }
 
-		#divRoster input[type=button].OnIce
-		{
-		    background-color: yellow;
-		    font-weight: bold;
-		}
+    #divRoster { display: block; }
+
+    #divRoster input[type=button] {
+        height: 30px;
+        margin: 5px;
+        min-width: 30px;
+        border-radius: 3px;
+        padding-left: 5px;
+        padding-right: 5px;
+        text-align: center;
+    }
+
+    #divRoster input[type=button].OnIce {
+        background-color: yellow;
+        font-weight: bold;
+    }
+
+    div.PlayerRoster {
+        display: block;
+        border: solid black 1px;
+        margin: 5px;
+        min-height: 25px;
+        border-radius: 3px;
+    }
 		
-		div.PlayerRoster 
-		{
-		    display: block;
-		    border: solid black 1px;
-		    margin: 5px;
-		    min-height: 25px;
-		    border-radius: 3px;
-		}
-		
-	</style>
-	<style type="text/css">
+</style>
+<style type="text/css">
 		/* Details */
 		
-		#divDetailsContainer table.ScoreEvents 
-		{
-		    margin-top: 10px;
-		    margin-bottom: 20px;
-		    margin-left: 5px;
-		    border-collapse: collapse;
-		}
+    #divDetailsContainer table.ScoreEvents {
+        margin-top: 10px;
+        margin-bottom: 20px;
+        margin-left: 5px;
+        border-collapse: collapse;
+    }
 
-		table.ScoreEvents td, table.ScoreEvents th
-		{
-		    padding: 2px 5px;
-		    border: solid navy 1px;
-		    text-align: center;
-		}
-	</style>
-	<script src="jquery-3.1.1.min.js" type="text/javascript"></script>
-	<script type="text/javascript">
-		// objects/classes
+    table.ScoreEvents td, table.ScoreEvents th {
+        padding: 2px 5px;
+        border: solid navy 1px;
+        text-align: center;
+    }
+</style>
+<script src="jquery-3.1.1.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+    // objects/classes
 
-		function PlayerProfile(playerNumber, playerName, playerPosition) {
-			this.PlayerNumber = null;
-			this.PlayerName = null;
-			this.PlayerPosition = null;
+    function PlayerProfile(playerNumber, playerName, playerPosition)
+    {
+        this.PlayerNumber = null;
+        this.PlayerName = null;
+        this.PlayerPosition = null;
 
-			this.toString = function () {
-				return ( this.PlayerNumber || "" ) + "!" + ( this.PlayerName || "" ) + "!" + ( this.PlayerPosition || "" );
-			};
+        this.toString = function()
+        {
+            return (this.PlayerNumber || "") + "!" + (this.PlayerName || "") + "!" + (this.PlayerPosition || "");
+        };
 
-			this.initialize = function (playerNumber, playerName, playerPosition) {
-				this.PlayerNumber = null;
-				this.PlayerName = null;
-				this.PlayerPosition = null;
+        this.initialize = function(playerNumber, playerName, playerPosition)
+        {
+            this.PlayerNumber = null;
+            this.PlayerName = null;
+            this.PlayerPosition = null;
 
-				if (playerNumber == null)
-					throw new Error("Cannot initialize PlayerProfile - missing Player Number");
+            if (playerNumber == null)
+                throw new Error("Cannot initialize PlayerProfile - missing Player Number");
 
-				if (playerName == null || playerName == "")
-					throw new Error("Cannot initialize PlayerProfile - missing Player Name");
+            if (playerName == null || playerName == "")
+                throw new Error("Cannot initialize PlayerProfile - missing Player Name");
 
-				if (playerPosition != null) {
-					if (playerPosition != "O" && playerPosition != "D" && playerPosition != "")
-						throw new Error("Cannot initialize PlayerProfile - invalid Player Position");
-				}
+            if (playerPosition != null)
+            {
+                if (playerPosition != "O" && playerPosition != "D" && playerPosition != "")
+                    throw new Error("Cannot initialize PlayerProfile - invalid Player Position");
+            }
 
-				if (isNaN(parseInt(playerNumber)))
-					throw new Error("Cannot initialize PlayerProfile - invalid Player Number (not an integer)");
+            if (isNaN(parseInt(playerNumber)))
+                throw new Error("Cannot initialize PlayerProfile - invalid Player Number (not an integer)");
 
-				this.PlayerNumber = parseInt(playerNumber);
-				this.PlayerName = playerName;
-				this.PlayerPosition = playerPosition;
+            this.PlayerNumber = parseInt(playerNumber);
+            this.PlayerName = playerName;
+            this.PlayerPosition = playerPosition;
 
-			    return this;
-			};
+            return this;
+        };
 
-			this.inflate = function (serializedPlayerProfile) {
-				this.PlayerNumber = null;
-				this.PlayerName = null;
-				this.PlayerPosition = null;
+        this.inflate = function(serializedPlayerProfile)
+        {
+            this.PlayerNumber = null;
+            this.PlayerName = null;
+            this.PlayerPosition = null;
 
-				if (serializedPlayerProfile == null || serializedPlayerProfile == "")
-					return;
+            if (serializedPlayerProfile == null || serializedPlayerProfile == "")
+                return;
 
-				var playerProfileParts = serializedPlayerProfile.split("!");
+            var playerProfileParts = serializedPlayerProfile.split("!");
 
-				if (playerProfileParts.length != 3)
-					throw new Error("Cannot inflate PlayerProfile - invalid serialized data (did not find 3 parts): " + serializedPlayerProfile);
+            if (playerProfileParts.length != 3)
+                throw new Error("Cannot inflate PlayerProfile - invalid serialized data (did not find 3 parts): " + serializedPlayerProfile);
 
-				this.initialize( playerProfileParts[0], playerProfileParts[1], playerProfileParts[2] );
+            this.initialize(playerProfileParts[0], playerProfileParts[1], playerProfileParts[2]);
 
-			    return this;
-			}
+            return this;
+        }
 
-			this.label = function () {
-				return this.PlayerNumber + ": " + this.PlayerName + " (" + this.PlayerPosition + ")";
-			}
+        this.label = function()
+        {
+            return this.PlayerNumber + ": " + this.PlayerName + " (" + this.PlayerPosition + ")";
+        }
 
-			this.createPlayerDiv = function () {
-				var newDiv = $("<div/>").text(this.label()).addClass("PlayerEntry");
+        this.createPlayerDiv = function()
+        {
+            var newDiv = $("<div/>").text(this.label()).addClass("PlayerEntry");
 
-				return newDiv;
-			};
+            return newDiv;
+        };
 
-			this.inflatFromPlayerDiv = function (div) {
-			};
+        this.inflatFromPlayerDiv = function(div)
+        {
+        };
 
-			if (playerNumber != null && playerName != null && playerPosition != null)
-				this.initialize(playerNumber, playerName, playerPosition);
-			else if (playerNumber != null && playerName == null)
-				this.inflate(playerNumber);
-		}
+        if (playerNumber != null && playerName != null && playerPosition != null)
+            this.initialize(playerNumber, playerName, playerPosition);
+        else if (playerNumber != null && playerName == null)
+            this.inflate(playerNumber);
+    }
 
-		function ScoreEvent( plusMinus, arrayPlayerNumbers ) {
-		    this.PlusMinus = plusMinus;
-		    this.PlayerNumbers = arrayPlayerNumbers;
+    function ScoreEvent(plusMinus, arrayPlayerNumbers)
+    {
+        this.PlusMinus = plusMinus;
+        this.PlayerNumbers = arrayPlayerNumbers;
 
-		    this.toString = function () {
-		        return this.PlusMinus.toString() + "!" + this.PlayerNumbers.toString().replace( /,/g, ";" );
-		    }
+        this.toString = function()
+        {
+            return this.PlusMinus.toString() + "!" + this.PlayerNumbers.toString().replace(/,/g, ";");
+        }
 
-		    this.inflate = function ( serializedScoreEvent ) {
-		        this.PlusMinus = 0;
-		        this.PlayerNumbers = [];
+        this.inflate = function(serializedScoreEvent)
+        {
+            this.PlusMinus = 0;
+            this.PlayerNumbers = [];
 
-		        var eventParts = serializedScoreEvent.split( "!" );
+            var eventParts = serializedScoreEvent.split("!");
 
-		        if ( eventParts.length !== 2 ) {
-		            alert( "Failed to deserialize a ScoreEvent" );
-		            return this;
-		        }
+            if (eventParts.length !== 2)
+            {
+                alert("Failed to deserialize a ScoreEvent");
+                return this;
+            }
 
-		        var plusMinus = parseInt( eventParts[0] );
+            var plusMinus = parseInt(eventParts[0]);
 
-		        if ( isNaN( plusMinus ) || ( plusMinus !== -1 && plusMinus !== 1 ) ) {
-		            alert( "Failed to deserialize a ScoreEvent - Invalid Plus/Minus" );
-		            return this;
-		        }
+            if (isNaN(plusMinus) || (plusMinus !== -1 && plusMinus !== 1))
+            {
+                alert("Failed to deserialize a ScoreEvent - Invalid Plus/Minus");
+                return this;
+            }
 
-		        if ( $.trim( eventParts[1] ) === "" ) {
-		            alert( "Failed to deserialize a ScoreEvent - Empty Players List" );
-		            return this;
-		        }
+            if ($.trim(eventParts[1]) === "")
+            {
+                alert("Failed to deserialize a ScoreEvent - Empty Players List");
+                return this;
+            }
 
-		        var playerArray = eventParts[1].split( ";" );
+            var playerArray = eventParts[1].split(";");
 
-		        this.PlusMinus = plusMinus;
-		        this.PlayerNumbers = playerArray;
+            this.PlusMinus = plusMinus;
+            this.PlayerNumbers = playerArray;
 
-		        return this;
-		    }
-		}
+            return this;
+        }
+    }
 
-		ScoreEvent.ToList = function ( scoreEventsString ) {
-		    var eventsArray = scoreEventsString.split( "," );
+    ScoreEvent.ToList = function(scoreEventsString)
+    {
+        var eventsArray = scoreEventsString.split(",");
 
-		    var finalList = [];
+        var finalList = [];
 
-		    $(eventsArray).each(function() {
-		        var scoreEvent = new ScoreEvent().inflate(this);
+        $(eventsArray).each(function() {
+            var scoreEvent = new ScoreEvent().inflate(this);
 
-		        finalList.push(scoreEvent);
-		    });
+            finalList.push(scoreEvent);
+        });
 
-		    return finalList;
-		}
+        return finalList;
+    }
 
-	    function Game(title, optScoreEvents)
-	    {
-	        this.Title = "";
-	        this.ScoreEvents = [];
+    function Game(gameId, title, optScoreEvents)
+    {
+        this.GameId = 0;
+        this.Title = "";
+        this.ScoreEvents = [];
 
-	        this.initialize = function(gameTitle, scoreEvents)
-	        {
-	            this.Title = gameTitle;
-	            this.ScoreEvents = scoreEvents;
+        this.initialize = function(gameId, gameTitle, scoreEvents)
+        {
+            if (gameId == null)
+                return this;
 
-	            return this;
-	        };
+            if (isNaN(parseInt(gameId)))
+                throw new Error( "Cannot Create Game - invalid Game Id" );
 
-	        this.inflate = function(serializedGame)
-	        {
-	            if (serializedGame == null || serializedGame === "")
-	                throw new Error("Cannot Create Game - missing serialized data");
+            this.GameId = parseInt(gameId);
+            this.Title = gameTitle || "";
+            this.ScoreEvents = scoreEvents == null || scoreEvents === "" ? [] : scoreEvents;
 
-	            var majorParts = serializedGame.split( "^" );
+            return this;
+        };
 
-	            if (majorParts.length !== 2)
-	                throw new Error( "Cannot Create Game - ill-formed serialized data (expecting 2 major parts)" );
+        this.inflate = function(serializedGame)
+        {
+            if (serializedGame == null || serializedGame === "")
+                throw new Error("Cannot Create Game - missing serialized data");
 
-	            var arrayScoreEvents = majorParts[1].split("$");
+            var majorParts = serializedGame.split("^");
 
-	            this.initialize(majorParts[0], arrayScoreEvents);
+            if (majorParts.length !== 3)
+                throw new Error("Cannot Create Game - ill-formed serialized data (expecting 3 major parts)");
 
-	            return this;
-	        }
+            var gameId = parseInt(majorParts[0]);
+            var gameTitle = majorParts[1];
 
-	        this.AddScoreEvent = function(scoreEvent)
-	        {
-	            this.ScoreEvents.push(scoreEvent);
-	        };
+            var arrayScoreEvents = majorParts[2].split("$");
 
-	        this.toString = function()
-	        {
-	            var scoreEventsList = this.ScoreEvents.toString().replace(/,/g, "$");
-	            return (this.Title || "") + "^" + (scoreEventsList || "");
-	        };
+            this.initialize(gameId, gameTitle, arrayScoreEvents);
 
-	        this.initialize( title, optScoreEvents );
+            return this;
+        }
+
+        this.AddScoreEvent = function(scoreEvent)
+        {
+            this.ScoreEvents.push(scoreEvent);
+        };
+
+        this.toString = function()
+        {
+            var scoreEventsList = this.ScoreEvents.toString().replace(/,/g, "$");
+            return this.GameId.toString() + "^" + (this.Title || "") + "^" + (scoreEventsList || "");
+        };
+
+        this.initialize(gameId, title, optScoreEvents);
+    }
+
+
+    Game.List = function()
+    {
+        var gameList = localStorage.getItem("gameList");
+
+        var gameArray = [];
+
+        if (gameList != null && gameList !== "")
+            gameArray = gameList.split(",");
+
+        return gameArray;
+    }
+
+
+    Game.FindGame = function(gameId)
+    {
+        if (gameId == null || gameId === "")
+            throw new Error("Cannot Find Game - Missing Search Id");
+
+        var effGameId = parseInt(gameId);
+
+        if (isNaN(effGameId))
+            throw new Error("Cannot Find Game - Invalid Search Id");
+
+        var gameArray = Game.List();
+
+        if (gameArray.length === 0)
+            return null;
+
+        for (var i = 0; i < gameArray.length; i++)
+        {
+            var theGame = new Game().inflate(gameArray[i]);
+
+            if (theGame.GameId === effGameId)
+                return theGame;
+        }
+
+        return null;
+    }
+
+
+    Game.NextAvailableGameId = function () {
+
+        var gameArray = Game.List();
+
+        var lastGameId = 0;
+
+        if (gameArray.length > 0)
+        {
+            var lastGame = new Game().inflate(gameArray[gameArray.length - 1]);
+            lastGameId = lastGame.GameId;
+        }
+
+        return ++lastGameId;
+    }
+
+    Game.AddNewGame = function(gameDescription)
+    {
+        if (gameDescription == null || gameDescription === "")
+            throw new Error("Cannot Add Game - Missing Game Description");
+
+        var newGameId = Game.NextAvailableGameId();
+
+        console.log("Game.AddNewGame(%s)", gameDescription);
+        console.log(newGameId);
+
+        var newGame = new Game(newGameId, gameDescription, []);
+
+        var gameList = Game.List();
+
+        gameList.push(newGame);
+
+        localStorage.gameList = gameList.toString();
+
+        return newGame;
+    }
+
+    Game.UpdateGameDescription = function(gameId, gameDescription)
+    {
+        console.log("Game.UpdateGameDescription(%s, %s)", gameId, gameDescription);
+
+        if (gameDescription == null || gameDescription === "")
+            throw new Error("Cannot Add/Update Game Description - Missing Game Description");
+
+        if (gameId == null || gameId === "")
+        {
+            var newGame = Game.AddNewGame(gameDescription);
+            return newGame;
+        }
+
+        var effGameId = parseInt(gameId);
+
+        if (isNaN(effGameId))
+            throw new Error("Cannot Update Game Description - Invalid Game Id");
+
+        var gameArray = Game.List();
+
+        if (gameArray.length === 0)
+        {
+            var newGame = Game.AddNewGame(gameDescription);
+            return newGame;
+        }
+
+        for (var i = 0; i < gameArray.length; i++)
+        {
+            var theGame = new Game().inflate(gameArray[i]);
+
+            if (theGame.GameId === effGameId)
+            {
+                theGame.Title = gameDescription;
+                gameArray[i] = theGame.toString();
+                localStorage.gameList = gameArray.toString();
+                return theGame;
+            }
+        }
+
+        throw new Error("Cannot Update Game Description - Game Not Found");
+    }
+
+
+</script>
+<script type="text/javascript">
+
+    $(document).ready(function() {
+
+        BuildLineup();
+
+        $("#txtPlayerNumber").change(function() {
+            $(this).val($(this).val().replace(/[^0-9]/g, ""));
+        });
+
+        $("#divLineup div").click(function() {
+            ShowPlayer($(this));
+        });
+
+        RefreshRoster();
+    });
+
+    function BuildLineup()
+    {
+        InitLineup();
+
+        var keyArray = [];
+
+        for (i = 0; localStorage.key(i) != null; i++)
+        {
+            if (localStorage.key(i).substr(0, 6) != "player")
+                continue;
+
+            var serializedPlayerProfile = localStorage.getItem(localStorage.key(i));
+            var playerProfile = new PlayerProfile(serializedPlayerProfile);
+
+            keyArray.push(parseInt(playerProfile.PlayerNumber));
+        }
+
+        keyArray.sort(function(a, b) { return a - b; });
+
+        $(keyArray).each(function() {
+            var playerNumber = this;
+            var infoKey = "player" + playerNumber;
+            var serializedPlayer = localStorage.getItem(infoKey);
+
+
+            var playerProfile = new PlayerProfile(serializedPlayer);
+            var objPlayerInfo = playerProfile.createPlayerDiv();
+
+            $("#divLineup").append(objPlayerInfo);
+        });
+    }
+
+    function InitLineup()
+    {
+        var playerNumberList = localStorage.getItem("NumberList");
+
+        if (playerNumberList != null)
+            return;
+
+        localStorage.setItem("NumberList", "1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,40,41,42,43,44,45,46,47,48,49");
+
+        var playerNumbers = localStorage.NumberList.split(",");
+
+        $(playerNumbers).each(function() {
+            var playerNumber = this;
+            var infoKey = "player" + playerNumber;
+
+            var playerInfo = localStorage.getItem(infoKey);
+
+            if (playerInfo == null)
+            {
+                var playerName = "Player" + playerNumber;
+
+                var playerProfile = new PlayerProfile(playerNumber, playerName, "");
+
+                localStorage.setItem(infoKey, playerProfile.toString());
+            }
+        });
+    }
+
+    function ShowPlayer(divPlayer)
+    {
+        var playerInfo = $.trim(divPlayer.text());
+        var playerNumber = $.trim(playerInfo.split(":")[0]);
+
+        var infoKey = "player" + playerNumber;
+
+        var serializedPlayer = localStorage.getItem(infoKey);
+
+        if (serializedPlayer == null || serializedPlayer == "")
+        {
+            alert("playerInfo not found");
+            return;
+        }
+
+        if ($("#divEntry").is(":visible") && playerNumber == $("#txtPlayerNumber").val())
+        {
+            $("#divEntry").hide();
+            return;
+        }
+
+        $("#divEntry").hide();
+
+        var playerProfile = new PlayerProfile(serializedPlayer);
+
+        $("#txtPlayerNumber").val(playerProfile.PlayerNumber);
+        $("#txtPlayerName").val(playerProfile.PlayerName);
+
+        $("#rbUnknown").prop("checked", true);
+
+        if (playerProfile.PlayerPosition == "O")
+            $("#rbOffense").prop("checked", true);
+        else if (playerProfile.PlayerPosition == "D")
+            $("#rbDefense").prop("checked", true);
+
+        $("#divEntry").insertAfter(divPlayer);
+        $("#txtPlayerNumber").prop("readonly", true);
+        $("#divEntry").show();
+        $("#txtPlayerName").focus().select();
+    }
+
+    function UpdatePlayer()
+    {
+        var playerName = $.trim($("#txtPlayerName").val());
+
+        if (playerName === "")
+        {
+            alert("Player Name must have a value");
+            return;
+        }
+
+        var playerNumber = $("#txtPlayerNumber").val();
+        var nPlayerNumber = parseInt(playerNumber);
+        var playerPosition = $("#rbOffense").prop("checked")
+            ? "O"
+            : (
+                $("#rbDefense").prop("checked")
+                    ? "D"
+                    : ""
+            );
+
+        var infoKey = "player" + playerNumber;
+
+        var playerProfile = new PlayerProfile(nPlayerNumber, playerName, playerPosition);
+
+        localStorage.setItem(infoKey, playerProfile.toString());
+
+        var divs = $("div.PlayerEntry")
+            .filter(function() {
+                return parseInt($.trim($(this).text()).split(":")[0]) >= nPlayerNumber;
+            });
+
+        if (divs.length === 0)
+        {
+            var objPlayerInfo = playerProfile.createPlayerDiv();
+            $("#divLineup").append(objPlayerInfo);
+
+            objPlayerInfo.click(function() {
+                ShowPlayer($(this));
+            });
+
+            return;
+        }
+
+        var div = $(divs[0]);
+
+        if ($.trim(div.text()).split(":")[0] === playerNumber)
+        {
+            div.text(playerProfile.label());
+            return;
+        }
+
+        var newDiv = playerProfile.createPlayerDiv();
+
+        newDiv.click(function() {
+            ShowPlayer($(this));
+        });
+
+        newDiv.insertBefore(div);
+    }
+
+    function CloseEntry()
+    {
+        $("#divEntry").prev()[0].scrollIntoView();
+        $("#divEntry").hide();
+    }
+
+    function AddNewPlayer()
+    {
+        $("#divEntry").hide();
+        $("#divEntry").insertBefore("#divLineup");
+        $("#txtPlayerNumber").prop("readonly", false).focus().val("");
+        $("#txtPlayerName").val("");
+        $("#rbUnknown").prop("checked", true);
+        $("#divEntry").show();
+    }
+
+    function DeleteEntry()
+    {
+        var playerNumber = $("#txtPlayerNumber").val();
+        var nPlayerNumber = parseInt(playerNumber);
+        var infoKey = "player" + playerNumber;
+
+        var gamePlayers = localStorage.gamePlayers;
+
+        if (gamePlayers != null && gamePlayers != "")
+        {
+            var gamePlayersArray = gamePlayers.split(",");
+
+            if (gamePlayers.indexOf(playerNumber) >= 0)
+            {
+                alert("Player cannot be deleted - currently 'On the Ice'");
+                return;
+            }
         }
 
 
-	</script>
-	<script type="text/javascript">
+        localStorage.removeItem(infoKey);
 
-		$(document).ready(function () {
+        var div = $("div.PlayerEntry")
+            .filter(function() {
+                return parseInt($.trim($(this).text()).split(":")[0]) === nPlayerNumber;
+            });
 
-			BuildLineup();
+        if (div.length === 1)
+        {
+            div.remove();
+        }
 
-			$("#txtPlayerNumber").change(function () {
-				$(this).val($(this).val().replace(/[^0-9]/g, ""));
-			});
+        $("#divEntry").hide();
+    }
 
-			$("#divLineup div").click(function () {
-				ShowPlayer($(this));
-			});
+</script>
+<script type="text/javascript">
+    // intra-screen navigation
 
-			RefreshRoster();
-		});
+    function NavigateToGame()
+    {
+        $("#divDropdownMenu").hide();
 
-		function BuildLineup() {
+        RefreshRoster();
 
-			InitLineup();
+        if ($("#divHockeyGame").is(":visible"))
+            return;
 
-			var keyArray = [];
+        if ($("#divHockeyLineup").is(":visible"))
+            $("#divHockeyLineup").slideToggle(500);
 
-			for (i = 0; localStorage.key(i) != null; i++) {
+        if ($("#divDetails").is(":visible"))
+            $("#divDetails").slideToggle(500);
 
-				if (localStorage.key(i).substr(0, 6) != "player")
-					continue;
+        if ($("#divGameList").is(":visible"))
+            $("#divGameList").slideToggle(500);
 
-				var serializedPlayerProfile = localStorage.getItem(localStorage.key(i));
-				var playerProfile = new PlayerProfile(serializedPlayerProfile);
+        $("#divTitle").text("Game");
 
-				keyArray.push(parseInt(playerProfile.PlayerNumber));
-			}
+        $("#divHockeyGame").slideToggle(500);
+    }
 
-			keyArray.sort(function (a, b) { return a - b; });
+    function NavigateToLineup()
+    {
+        $("#divDropdownMenu").hide();
 
-			$(keyArray).each(function () {
-				var playerNumber = this;
-				var infoKey = "player" + playerNumber;
-				var serializedPlayer = localStorage.getItem(infoKey);
+        if ($("#divHockeyLineup").is(":visible"))
+            return;
 
+        if ($("#divHockeyGame").is(":visible"))
+            $("#divHockeyGame").slideToggle(500);
 
-				var playerProfile = new PlayerProfile(serializedPlayer);
-				var objPlayerInfo = playerProfile.createPlayerDiv();
+        if ($("#divDetails").is(":visible"))
+            $("#divDetails").slideToggle(500);
 
-				$("#divLineup").append(objPlayerInfo);
-			});
-		}
+        if ($("#divGameList").is(":visible"))
+            $("#divGameList").slideToggle(500);
 
-		function InitLineup() {
-			var playerNumberList = localStorage.getItem("NumberList");
+        $("#divTitle").text("Lineup");
 
-			if (playerNumberList != null)
-				return;
+        $("#divHockeyLineup").slideToggle(500);
+    }
 
-			localStorage.setItem("NumberList", "1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,40,41,42,43,44,45,46,47,48,49");
+    function NavigateToDetails()
+    {
+        $("#divDropdownMenu").hide();
 
-			var playerNumbers = localStorage.NumberList.split(",");
+        BuildDetails();
 
-			$(playerNumbers).each(function () {
-				var playerNumber = this;
-				var infoKey = "player" + playerNumber;
+        if ($("#divDetails").is(":visible"))
+            return;
 
-				var playerInfo = localStorage.getItem(infoKey);
+        if ($("#divHockeyLineup").is(":visible"))
+            $("#divHockeyLineup").slideToggle(500);
 
-				if (playerInfo == null) {
-					var playerName = "Player" + playerNumber;
+        if ($("#divHockeyGame").is(":visible"))
+            $("#divHockeyGame").slideToggle(500);
 
-					var playerProfile = new PlayerProfile(playerNumber, playerName, "");
+        if ($("#divGameList").is(":visible"))
+            $("#divGameList").slideToggle(500);
 
-					localStorage.setItem(infoKey, playerProfile.toString());
-				}
-			});
-		}
+        $("#divTitle").text("Details");
 
-		function ShowPlayer(divPlayer) {
-			var playerInfo = $.trim(divPlayer.text());
-			var playerNumber = $.trim(playerInfo.split(":")[0]);
+        $("#divDetails").slideToggle(500);
+    }
 
-			var infoKey = "player" + playerNumber;
+    function NavigateToGameList()
+    {
+        $("#divDropdownMenu").hide();
 
-			var serializedPlayer = localStorage.getItem(infoKey);
+        GenerateGameListing();
 
-			if (serializedPlayer == null || serializedPlayer == "") {
-				alert("playerInfo not found");
-				return;
-			}
+        if ($("#divGameList").is(":visible"))
+            return;
 
-			if ($("#divEntry").is(":visible") && playerNumber == $("#txtPlayerNumber").val()) {
-				$("#divEntry").hide();
-				return;
-			}
+        if ($("#divDetails").is(":visible"))
+            $("#divDetails").slideToggle(500);
 
-			$("#divEntry").hide();
+        if ($("#divHockeyLineup").is(":visible"))
+            $("#divHockeyLineup").slideToggle(500);
 
-			var playerProfile = new PlayerProfile(serializedPlayer);
+        if ($("#divHockeyGame").is(":visible"))
+            $("#divHockeyGame").slideToggle(500);
 
-			$("#txtPlayerNumber").val(playerProfile.PlayerNumber);
-			$("#txtPlayerName").val(playerProfile.PlayerName);
+        $("#divTitle").text("Game Listing");
 
-			$("#rbUnknown").prop("checked", true);
+        $("#divGameList").slideToggle(500);
+    }
 
-			if (playerProfile.PlayerPosition == "O")
-				$("#rbOffense").prop("checked", true);
-			else if (playerProfile.PlayerPosition == "D")
-				$("#rbDefense").prop("checked", true);
+</script>
+<script type="text/javascript">
 
-			$("#divEntry").insertAfter(divPlayer);
-			$("#txtPlayerNumber").prop("readonly", true);
-			$("#divEntry").show();
-			$("#txtPlayerName").focus().select();
-		}
+    function ResetGame()
+    {
+        if (!confirm("Reset game - will lose all game-time history?"))
+            return;
 
-		function UpdatePlayer() {
-			var playerName = $.trim($("#txtPlayerName").val());
+        localStorage.removeItem("gamePlayers");
+        localStorage.removeItem("scoreEvents");
 
-			if (playerName === "") {
-				alert("Player Name must have a value");
-				return;
-			}
+        RefreshRoster();
+    }
 
-			var playerNumber = $("#txtPlayerNumber").val();
-			var nPlayerNumber = parseInt(playerNumber);
-			var playerPosition = $("#rbOffense").prop("checked")
-						? "O"
-						: (
-							$("#rbDefense").prop("checked")
-								? "D"
-								: ""
-						);
 
-			var infoKey = "player" + playerNumber;
+    function RefreshRoster()
+    {
+        $("#divRosterOffense").empty();
+        $("#divRosterDefense").empty();
+        $("#divRosterUnknown").empty();
+        $("#divOnIce").empty();
 
-			var playerProfile = new PlayerProfile(nPlayerNumber, playerName, playerPosition);
+        var keyArray = [];
 
-			localStorage.setItem(infoKey, playerProfile.toString());
+        for (i = 0; localStorage.key(i) != null; i++)
+        {
+            if (localStorage.key(i).substr(0, 6) != "player")
+                continue;
 
-			var divs = $("div.PlayerEntry")
-				.filter(function () {
-					return parseInt($.trim($(this).text()).split(":")[0]) >= nPlayerNumber;
-				});
+            var serializedPlayer = localStorage.getItem(localStorage.key(i));
+            var playerProfile = new PlayerProfile(serializedPlayer);
 
-			if (divs.length === 0) {
-				var objPlayerInfo = playerProfile.createPlayerDiv();
-				$("#divLineup").append(objPlayerInfo);
+            keyArray.push(parseInt(playerProfile.PlayerNumber));
+        }
 
-				objPlayerInfo.click(function () {
-					ShowPlayer($(this));
-				});
+        keyArray.sort(function(a, b) { return a - b; });
 
-				return;
-			}
+        $(keyArray).each(function() {
+            var infoKey = "player" + this;
+            var serializedPlayer = localStorage.getItem(infoKey);
+            var playerProfile = new PlayerProfile(serializedPlayer);
+            var thisPlayer = $("<input type='button' name='btnPlayer' onclick='TogglePlayer(this);'/>").val(playerProfile.PlayerNumber);
 
-			var div = $(divs[0]);
+            if (playerProfile.PlayerPosition == "O")
+                $("#divRosterOffense").append(thisPlayer);
+            else if (playerProfile.PlayerPosition == "D")
+                $("#divRosterDefense").append(thisPlayer);
+            else
+                $("#divRosterUnknown").append(thisPlayer);
+        });
 
-			if ($.trim(div.text()).split(":")[0] === playerNumber) {
-				div.text(playerProfile.label());
-				return;
-			}
+        var gamePlayers = localStorage.gamePlayers;
 
-			var newDiv = playerProfile.createPlayerDiv();
+        if (gamePlayers != null && gamePlayers != "")
+        {
+            var gamePlayersArray = gamePlayers.split(",");
 
-			newDiv.click(function () {
-				ShowPlayer($(this));
-			});
+            $(gamePlayersArray).each(function() {
+                var playerNumber = this;
 
-			newDiv.insertBefore(div);
-		}
+                var searchButton = "input[type=button][name=btnPlayer][value=" + playerNumber + "]"
+                var btnPlayer = $(searchButton);
 
-		function CloseEntry() {
-			$("#divEntry").prev()[0].scrollIntoView();
-			$("#divEntry").hide();
-		}
+                if (btnPlayer.length != 1)
+                {
+                    alert("Did not find button for player #" + playerNumber);
+                    return;
+                }
 
-		function AddNewPlayer() {
-			$("#divEntry").hide();
-			$("#divEntry").insertBefore("#divLineup");
-			$("#txtPlayerNumber").prop("readonly", false).focus().val("");
-			$("#txtPlayerName").val("");
-			$("#rbUnknown").prop("checked", true);
-			$("#divEntry").show();
-		}
+                btnPlayer.addClass("OnIce");
+            });
 
-		function DeleteEntry() {
-			var playerNumber = $("#txtPlayerNumber").val();
-			var nPlayerNumber = parseInt(playerNumber);
-			var infoKey = "player" + playerNumber;
+            $("#divOnIce").text("On Ice: " + gamePlayersArray.toString());
+        }
+    }
 
-			var gamePlayers = localStorage.gamePlayers;
+    function TogglePlayer(btn)
+    {
+        var playerNumber = $.trim($(btn).val());
 
-			if (gamePlayers != null && gamePlayers != "") {
-				var gamePlayersArray = gamePlayers.split(",");
+        var gamePlayers = localStorage.gamePlayers;
 
-				if (gamePlayers.indexOf(playerNumber) >= 0) {
-					alert("Player cannot be deleted - currently 'On the Ice'");
-					return;
-				}
-			}
+        var playerList = [];
 
+        if (gamePlayers != null && gamePlayers != "")
+            playerList = gamePlayers.split(",");
 
-			localStorage.removeItem(infoKey);
+        var idx = playerList.indexOf(playerNumber);
 
-			var div = $("div.PlayerEntry")
-				.filter(function () {
-					return parseInt($.trim($(this).text()).split(":")[0]) === nPlayerNumber;
-				});
+        if (idx >= 0)
+            playerList.splice(idx, 1);
+        else
+            playerList.push(playerNumber);
 
-			if (div.length === 1) {
-				div.remove();
-			}
+        playerList.sort(function(a, b) { return parseInt(a) - parseInt(b); });
 
-			$("#divEntry").hide();
-		}
+        localStorage.gamePlayers = playerList;
 
-	</script>
-	<script type="text/javascript">
-		// intra-screen navigation
+        $(btn).toggleClass("OnIce");
 
-		function NavigateToGame()
-		{
-		    $("#divDropdownMenu").hide();
+        $("#divOnIce").text("On Ice: " + playerList.toString());
+    }
 
-		    RefreshRoster();
+    function RecordScoringEvent(plusMinus)
+    {
+        var gamePlayers = localStorage.gamePlayers;
 
-		    if ($("#divHockeyGame").is(":visible"))
-		        return;
+        if (gamePlayers == null || gamePlayers === "")
+            return;
+
+        var arrayPlayers = gamePlayers.split(",");
+
+        var scoreEvent = new ScoreEvent(plusMinus, arrayPlayers);
+
+        var currentEventsArray = [];
 
-		    if ($("#divHockeyLineup").is(":visible"))
-		        $("#divHockeyLineup").slideToggle(500);
+        var currentEvents = localStorage.scoreEvents;
+
+        if (currentEvents != null && currentEvents != "")
+        {
+            currentEventsArray = currentEvents.split(",");
+        }
+
+        currentEventsArray.push(scoreEvent);
+
+        localStorage.setItem("scoreEvents", currentEventsArray);
 
-			if ($("#divDetails").is(":visible"))
-				$("#divDetails").slideToggle(500);
+        $("#divScoreMessage").text(plusMinus === 1 ? "Yay!" : "Sadness").show();
+        $("#divScoreMessage").fadeOut(5000);
+    }
 
-		    $("#divTitle").text("Game");
+</script>
+<script type="text/javascript">
+    // swiping code
 
-			$("#divHockeyGame").slideToggle(500);
-		}
+    var xDown = null;
+    var yDown = null;
 
-		function NavigateToLineup()
-		{
-		    $("#divDropdownMenu").hide();
+    $(document).ready(function() {
+        document.addEventListener("touchstart", handleTouchStart, false);
+        document.addEventListener("touchmove", handleTouchMove, false);
+    });
 
-		    if ($("#divHockeyLineup").is(":visible"))
-		        return;
 
-		    if ($("#divHockeyGame").is(":visible"))
-		        $("#divHockeyGame").slideToggle(500);
+    function handleTouchStart(evt)
+    {
+        xDown = evt.touches[0].clientX;
+        yDown = evt.touches[0].clientY;
+    }
 
-		    if ($("#divDetails").is(":visible"))
-				$("#divDetails").slideToggle(500);
+    function handleTouchMove(evt)
+    {
+        if (!xDown || !yDown)
+        {
+            return;
+        }
 
-		    $("#divTitle").text("Lineup");
+        var xUp = evt.touches[0].clientX;
+        var yUp = evt.touches[0].clientY;
 
-		    $( "#divHockeyLineup" ).slideToggle( 500 );
-		}
+        var xDiff = xDown - xUp;
+        var yDiff = yDown - yUp;
 
-		function NavigateToDetails()
-		{
-		    $("#divDropdownMenu").hide();
+        if (Math.abs(xDiff) > Math.abs(yDiff))
+        { /*most significant*/
+            if (xDiff > 0)
+            {
+                SwipeLeft();
+            }
+            else
+            {
+                SwipeRight();
+            }
+        }
+        else
+        {
+            if (yDiff > 0)
+            {
+                /* up swipe */
+            }
+            else
+            {
+                /* down swipe */
+            }
+        }
+        /* reset values */
+        xDown = null;
+        yDown = null;
+    }
 
-		    BuildDetails();
+    function SwipeLeft()
+    {
+        if ($("#divHockeyLineup:visible").length == 1)
+        {
+            NavigateToGame();
+        }
+        else if ($("#divHockeyGame:visible").length == 1)
+        {
+            NavigateToLineup();
+        }
+    }
 
-		    if ($("#divDetails").is(":visible"))
-		        return;
+    function SwipeRight()
+    {
+        if ($("#divHockeyLineup:visible").length == 1)
+        {
+            NavigateToGame();
+        }
+        else if ($("#divHockeyGame:visible").length == 1)
+        {
+            NavigateToLineup();
+        }
+    }
 
-			if ($("#divHockeyLineup").is(":visible"))
-				$("#divHockeyLineup").slideToggle(500);
 
-			if ($("#divHockeyGame").is(":visible"))
-				$("#divHockeyGame").slideToggle(500);
+</script>
+<script type="text/javascript">
+    // Details
 
-		    $("#divTitle").text("Details");
+    function BuildDetails()
+    {
+        $("#divDetailsContainer").empty();
 
-		    $("#divDetails").slideToggle(500);
-		}
+        var currentEvents = localStorage.scoreEvents;
 
-	</script>
-	<script type="text/javascript">
+        console.log("currentEvents: %s", currentEvents);
 
-		function ResetGame() {
+        var scoringEvents = ScoreEvent.ToList(currentEvents);
 
-			if (!confirm("Reset game - will lose all game-time history?"))
-				return;
+        if (scoringEvents.length === 0)
+        {
+            $("#divDetailsContainer").text("No Scoring Events");
+            return;
+        }
 
-			localStorage.removeItem("gamePlayers");
-			localStorage.removeItem("scoreEvents");
+        var tblScore = $("<table class='ScoreEvents' />");
+        var trHeader = $("<tr/>");
 
-			RefreshRoster();
-		}
+        trHeader.append($("<th/>").text("+/-"));
+        trHeader.append($("<th/>").text("Players"));
 
+        tblScore.append(trHeader);
 
-		function RefreshRoster() {
-			$("#divRosterOffense").empty();
-			$("#divRosterDefense").empty();
-			$("#divRosterUnknown").empty();
-			$("#divOnIce").empty();
+        $(scoringEvents).each(function() {
+            var tr = $("<tr/>");
 
-			var keyArray = [];
+            tr.append($("<td/>").text(this.PlusMinus));
+            tr.append($("<td/>").text(this.PlayerNumbers.toString()));
+            tblScore.append(tr);
+        });
 
-			for (i = 0; localStorage.key(i) != null; i++) {
+        $("#divDetailsContainer").append(tblScore);
+    }
 
-				if (localStorage.key(i).substr(0, 6) != "player")
-					continue;
+</script>
 
-				var serializedPlayer = localStorage.getItem(localStorage.key(i));
-				var playerProfile = new PlayerProfile(serializedPlayer);
+<script type="text/javascript">
 
-				keyArray.push(parseInt(playerProfile.PlayerNumber));
-			}
+    // Game Listing
 
-			keyArray.sort(function (a, b) { return a - b; });
+    function GenerateGameListing()
+    {
+        $("#GameId").val("");
+        $("#GameDescription").val("");
+        $("#divGameListListing").empty();
+        $("#divGameListContainer").show();
+        $("#btnUpdateGame").val("Add/Update");
+        $("#divGameInfo").hide();
+        $("#divGameInfoAddNewGame").show();
 
-			$(keyArray).each(function () {
-				var infoKey = "player" + this;
-				var serializedPlayer = localStorage.getItem(infoKey);
-				var playerProfile = new PlayerProfile(serializedPlayer);
-				var thisPlayer = $("<input type='button' name='btnPlayer' onclick='TogglePlayer(this);'/>").val(playerProfile.PlayerNumber);
+        var gameArray = Game.List();
 
-				if (playerProfile.PlayerPosition == "O")
-					$("#divRosterOffense").append(thisPlayer);
-				else if (playerProfile.PlayerPosition == "D")
-					$("#divRosterDefense").append(thisPlayer);
-				else
-					$("#divRosterUnknown").append(thisPlayer);
-			});
+        if (gameArray.length === 0)
+        {
+            $("#divGameListListing").text("No games found");
+            return;
+        }
 
-			var gamePlayers = localStorage.gamePlayers;
+        for (var i = 0; i < gameArray.length; i++)
+        {
+            var theGame = new Game().inflate(gameArray[i]);
+            console.log(theGame);
+            var gameId = theGame.GameId;
+            var linkAction = "javascript: SetupUpdateGame( " + gameId + " );";
+            var divGame = $("<div/>");
+            var divLink = $("<a/>").prop("href", linkAction).html(theGame.Title);
 
-			if (gamePlayers != null && gamePlayers != "") {
-				var gamePlayersArray = gamePlayers.split(",");
+            divGame.append(divLink);
 
-				$(gamePlayersArray).each(function () {
-					var playerNumber = this;
+            $("#divGameListListing").append(divGame);
+        }
+    }
 
-					var searchButton = "input[type=button][name=btnPlayer][value=" + playerNumber + "]"
-					var btnPlayer = $(searchButton);
 
-					if (btnPlayer.length != 1) {
-						alert("Did not find button for player #" + playerNumber);
-						return;
-					}
+    function SetupAddNewGame()
+    {
+        $("#GameId").val("");
+        $("#GameDescription").val("").focus();
 
-					btnPlayer.addClass("OnIce");
-				});
+        $("#divGameListContainer").hide();
+        $("#btnUpdateGame").val("Add");
+        $("#divGameInfo").show();
+        $("#divGameInfoAddNewGame").hide();
+    }
 
-				$("#divOnIce").text("On Ice: " + gamePlayersArray.toString());
-			}
-		}
+    function SetupUpdateGame(gameId)
+    {
+        $("#GameId").val(gameId);
 
-		function TogglePlayer(btn) {
-			var playerNumber = $.trim($(btn).val());
+        var theGame = Game.FindGame(gameId);
 
-			var gamePlayers = localStorage.gamePlayers;
+        if (theGame == null)
+            throw new Error("Cannot View/Update Game - Not Found");
 
-			var playerList = [];
+        $("#GameDescription").val(theGame.Title).focus();
 
-			if (gamePlayers != null && gamePlayers != "")
-				playerList = gamePlayers.split(",");
+        $("#divGameListContainer").hide();
+        $("#btnUpdateGame").val("Update");
+        $("#divGameInfo").show();
+        $("#divGameInfoAddNewGame").hide();
+    }
 
-			var idx = playerList.indexOf(playerNumber);
+    function UpdateGame()
+    {
+        var gameDescription = $.trim($("#GameDescription").val());
 
-			if (idx >= 0)
-				playerList.splice(idx, 1);
-			else
-				playerList.push(playerNumber);
+        if (gameDescription === "")
+        {
+            alert("Game Description required");
+            $("#GameDescription").focus();
+        }
 
-			playerList.sort(function (a, b) { return parseInt(a) - parseInt(b); });
+        Game.UpdateGameDescription($("#GameId").val(), gameDescription);
 
-			localStorage.gamePlayers = playerList;
+        GenerateGameListing();
+    }
 
-			$(btn).toggleClass("OnIce");
-
-			$("#divOnIce").text("On Ice: " + playerList.toString());
-		}
-
-		function RecordScoringEvent(plusMinus) {
-			var gamePlayers = localStorage.gamePlayers;
-
-			if (gamePlayers == null || gamePlayers === "")
-				return;
-
-			var arrayPlayers = gamePlayers.split(",");
-
-			var scoreEvent = new ScoreEvent(plusMinus, arrayPlayers);
-
-			var currentEventsArray = [];
-
-			var currentEvents = localStorage.scoreEvents;
-
-			if (currentEvents != null && currentEvents != "") {
-				currentEventsArray = currentEvents.split(",");
-			}
-
-			currentEventsArray.push(scoreEvent);
-
-			localStorage.setItem("scoreEvents", currentEventsArray);
-
-			$("#divScoreMessage").text(plusMinus === 1 ? "Yay!" : "Sadness").show();
-			$("#divScoreMessage").fadeOut(5000);
-		}
-
-	</script>
-	<script type="text/javascript">
-		// swiping code
-
-		var xDown = null;
-		var yDown = null;
-
-		$(document).ready(function () {
-			document.addEventListener("touchstart", handleTouchStart, false);
-			document.addEventListener("touchmove", handleTouchMove, false);
-		});
-
-
-		function handleTouchStart(evt) {
-			xDown = evt.touches[0].clientX;
-			yDown = evt.touches[0].clientY;
-		}
-
-		function handleTouchMove(evt) {
-			if (!xDown || !yDown) {
-				return;
-			}
-
-			var xUp = evt.touches[0].clientX;
-			var yUp = evt.touches[0].clientY;
-
-			var xDiff = xDown - xUp;
-			var yDiff = yDown - yUp;
-
-			if (Math.abs(xDiff) > Math.abs(yDiff)) {/*most significant*/
-				if (xDiff > 0) {
-					SwipeLeft();
-				} else {
-					SwipeRight();
-				}
-			} else {
-				if (yDiff > 0) {
-					/* up swipe */
-				} else {
-					/* down swipe */
-				}
-			}
-			/* reset values */
-			xDown = null;
-			yDown = null;
-		}
-
-		function SwipeLeft() {
-			if ($("#divHockeyLineup:visible").length == 1) {
-				NavigateToGame();
-			} else if ($("#divHockeyGame:visible").length == 1) {
-				NavigateToLineup();
-			}
-		}
-
-		function SwipeRight() {
-			if ($("#divHockeyLineup:visible").length == 1) {
-				NavigateToGame();
-			} else if ($("#divHockeyGame:visible").length == 1) {
-				NavigateToLineup();
-			}
-		}
-
-
-	</script>
-	<script type="text/javascript">
-		// Details
-
-		function BuildDetails() {
-			$("#divDetailsContainer").empty();
-
-			var currentEvents = localStorage.scoreEvents;
-
-			console.log("currentEvents: %s", currentEvents);
-
-			var scoringEvents = ScoreEvent.ToList(currentEvents);
-
-			if (scoringEvents.length == 0) {
-				$("#divDetailsContainer").text("No Scoring Events");
-				return;
-			}
-
-			var tblScore = $("<table class='ScoreEvents' />");
-			var trHeader = $("<tr/>");
-
-			trHeader.append($("<th/>").text("+/-"));
-			trHeader.append($("<th/>").text("Players"));
-
-			tblScore.append(trHeader);
-
-			$(scoringEvents).each(function () {
-				scoringEvent = this;
-
-				var tr = $("<tr/>");
-
-				tr.append($("<td/>").text(this.PlusMinus));
-				tr.append($("<td/>").text(this.PlayerNumbers.toString()));
-				tblScore.append(tr);
-			});
-
-			$("#divDetailsContainer").append(tblScore);
-		}
-
-	</script>
+</script>
 
 </head>
 <body>
@@ -950,7 +1209,7 @@
                 </td>
             </tr>
         </table>
-        <hr />
+        <hr/>
     </div>
     <div id="divHockeyLineup">
         <div>
@@ -960,8 +1219,8 @@
                 </div>
             </div>
             <div class="Footer">
-                <hr />
-                <input type="button" id="btnAddPlayer" onclick="AddNewPlayer" value="Add Player" />
+                <hr/>
+                <input type="button" id="btnAddPlayer" onclick="AddNewPlayer" value="Add Player"/>
             </div>
         </div>
         <div id="divEntry" style="display: none;">
@@ -970,7 +1229,7 @@
                     Player #
                 </div>
                 <div class="PlayerDisplayValue">
-                    <input type="text" id="txtPlayerNumber" style="width: 50px;" readonly="readonly" />
+                    <input type="text" id="txtPlayerNumber" style="width: 50px;" readonly="readonly"/>
                 </div>
             </div>
             <div class="PlayerDisplayEntry">
@@ -978,7 +1237,7 @@
                     Name
                 </div>
                 <div class="PlayerDisplayValue">
-                    <input type="text" id="txtPlayerName" style="width: 150px;" />
+                    <input type="text" id="txtPlayerName" style="width: 150px;"/>
                 </div>
             </div>
             <div class="PlayerDisplayEntry">
@@ -987,20 +1246,20 @@
                 </div>
                 <div class="PlayerDisplayValue">
                     <div class="PlayerPositionType">
-                        <input type="radio" name="PlayerPosition" id="rbOffense" value="O" /><label for="rbOffense">Offense</label>
+                        <input type="radio" name="PlayerPosition" id="rbOffense" value="O"/><label for="rbOffense">Offense</label>
                     </div>
                     <div class="PlayerPositionType">
-                        <input type="radio" name="PlayerPosition" id="rbDefense" value="D" /><label for="rbDefense">Defense</label><br />
+                        <input type="radio" name="PlayerPosition" id="rbDefense" value="D"/><label for="rbDefense">Defense</label><br/>
                     </div>
                     <div class="PlayerPositionType">
-                        <input type="radio" name="PlayerPosition" id="rbUnknown" value="" /><label for="rbUnknown">Both/Unknown</label>
+                        <input type="radio" name="PlayerPosition" id="rbUnknown" value=""/><label for="rbUnknown">Both/Unknown</label>
                     </div>
                 </div>
             </div>
             <div class="PlayerDisplayEntry">
-                <input type="button" id="btnUpdate" value="Update" onclick="UpdatePlayer();" />
-                <input type="button" id="btnClose" value="Close" onclick="CloseEntry();" />
-                <input type="button" id="btnDelete" value="Delete" onclick="DeleteEntry();" />
+                <input type="button" id="btnUpdate" value="Update" onclick="UpdatePlayer();"/>
+                <input type="button" id="btnClose" value="Close" onclick="CloseEntry();"/>
+                <input type="button" id="btnDelete" value="Delete" onclick="DeleteEntry();"/>
             </div>
         </div>
     </div>
@@ -1011,23 +1270,23 @@
                     <table style="width: 100%;">
                         <tr>
                             <td>
-                                <input type="button" id="btnScoreGoal" onclick="RecordScoringEvent(1)" value="We Scored" />
+                                <input type="button" id="btnScoreGoal" onclick="RecordScoringEvent(1)" value="We Scored"/>
                             </td>
                             <td style="text-align: center;">
                                 <div id="divScoreMessage"></div>
                             </td>
                             <td style="text-align: right;">
-                                <input type="button" id="btnGiveUpGoal" onclick="RecordScoringEvent(-1)" value="They Scored" />
+                                <input type="button" id="btnGiveUpGoal" onclick="RecordScoringEvent(-1)" value="They Scored"/>
                             </td>
                         </tr>
                     </table>
                 </div>
-                <hr />
+                <hr/>
             </div>
             <div class="Body">
                 <div class="Content">
                     <div id="divOnIce"></div>
-                    <hr />
+                    <hr/>
                     <div id="divRoster">
                         <div id="divRosterOffense" class="PlayerRoster"></div>
                         <div id="divRosterDefense" class="PlayerRoster"></div>
@@ -1036,8 +1295,8 @@
                 </div>
             </div>
             <div class="Footer">
-                <hr />
-                <input type="button" id="btnResetGame" onclick="ResetGame();" value="Reset Game" />
+                <hr/>
+                <input type="button" id="btnResetGame" onclick="ResetGame();" value="Reset Game"/>
             </div>
         </div>
     </div>
@@ -1050,8 +1309,34 @@
             </div>
         </div>
     </div>
+    <div id="divGameList" style="display: none;">
+        <div>
+            <div class="Body">
+                <div class="Content">
+                    <div id="divGameListContainer">
+                        <b>Existing Games:</b>
+                        <div id="divGameListListing"></div>
+                    </div>
+                    <div id="divGameInfo" style="display: none;">
+                        <div class="PlayerDisplayEntry">
+                            <div class="PlayerDisplayPrompt">Game Description</div>
+                            <div class="PlayerDisplayValue">
+                                <input type="hidden" id="GameId"/>
+                                <input type="text" id="GameDescription" style="width: 250px"/>
+                            </div>
+                        </div>
+                        <input type="button" id="btnUpdateGame" value="Update/Add" onclick="UpdateGame();"/>
+                    </div>
+                    <div id="divGameInfoAddNewGame">
+                        <hr/>
+                        <input type="button" id="btnAddNewGame" value="Add Game" onclick="SetupAddNewGame();"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="Footer">
-        <hr />
+        <hr/>
         Copyright &copy; 2018 - Viking Information Services, Inc.
     </div>
 </div>
@@ -1059,6 +1344,7 @@
     <a href="javascript: NavigateToLineup();">Lineup</a>
     <a href="javascript: NavigateToGame();">Game</a>
     <a href="javascript: NavigateToDetails();">Details</a>
+    <a href="javascript: NavigateToGameList();">Game List</a>
 </div>
 </body>
 </html>
