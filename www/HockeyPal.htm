@@ -270,7 +270,7 @@
 
             if (playerPosition != null)
             {
-                if (playerPosition != "O" && playerPosition != "D" && playerPosition != "")
+                if (playerPosition !== "O" && playerPosition !== "D" && playerPosition !== "")
                     throw new Error("Cannot initialize PlayerProfile - invalid Player Position");
             }
 
@@ -290,12 +290,12 @@
             this.PlayerName = null;
             this.PlayerPosition = null;
 
-            if (serializedPlayerProfile == null || serializedPlayerProfile == "")
-                return;
+            if (serializedPlayerProfile == null || serializedPlayerProfile === "")
+                return this;
 
             var playerProfileParts = serializedPlayerProfile.split("!");
 
-            if (playerProfileParts.length != 3)
+            if (playerProfileParts.length !== 3)
                 throw new Error("Cannot inflate PlayerProfile - invalid serialized data (did not find 3 parts): " + serializedPlayerProfile);
 
             this.initialize(playerProfileParts[0], playerProfileParts[1], playerProfileParts[2]);
@@ -315,15 +315,81 @@
             return newDiv;
         };
 
-        this.inflatFromPlayerDiv = function(div)
-        {
-        };
-
         if (playerNumber != null && playerName != null && playerPosition != null)
             this.initialize(playerNumber, playerName, playerPosition);
         else if (playerNumber != null && playerName == null)
             this.inflate(playerNumber);
     }
+
+    PlayerProfile.GetPlayerNumberFromPlayerDiv = function(divPlayer)
+    {
+        var playerInfo = $.trim(divPlayer.text());
+        var playerNumber = $.trim(playerInfo.split(":")[0]);
+
+        return parseInt(playerNumber);
+    }
+
+    PlayerProfile.GetPlayerProfileReferencedByDiv = function(divPlayer)
+    {
+        var playerNumber = PlayerProfile.GetPlayerNumberFromPlayerDiv(divPlayer);
+        var playerList = PlayerProfile.List();
+
+        for (var i = 0; i < playerList.length; i++)
+        {
+            var player = playerList[i];
+
+            if (playerNumber === player.PlayerNumber)
+                return player;
+        }
+
+        return null;
+    }
+
+    PlayerProfile.InitLineup = function () {
+        var playerNumberList = localStorage.getItem("NumberList");
+
+        if (playerNumberList != null)
+            return;
+
+        localStorage.setItem("NumberList", "1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,40,41,42,43,44,45,46,47,48,49");
+
+        var playerNumbers = localStorage.NumberList.split(",");
+
+        $(playerNumbers).each(function () {
+            var playerNumber = this;
+            var infoKey = "player" + playerNumber;
+
+            var playerInfo = localStorage.getItem(infoKey);
+
+            if (playerInfo == null) {
+                var playerName = "Player" + playerNumber;
+
+                var playerProfile = new PlayerProfile(playerNumber, playerName, "");
+
+                localStorage.setItem(infoKey, playerProfile.toString());
+            }
+        });
+    }
+
+    PlayerProfile.List = function()
+    {
+        var playerList = [];
+
+        for (var i = 0; localStorage.key(i) != null; i++) {
+            if (localStorage.key(i).substr(0, 6) !== "player")
+                continue;
+
+            var serializedPlayerProfile = localStorage.getItem(localStorage.key(i));
+            var playerProfile = new PlayerProfile(serializedPlayerProfile);
+
+            playerList.push(playerProfile);
+        }
+
+        playerList.sort(function(a, b) { return a.PlayerNumber - b.PlayerNumber });
+
+        return playerList;
+    }
+
 
     function ScoreEvent(plusMinus, arrayPlayerNumbers)
     {
@@ -449,7 +515,13 @@
         var gameArray = [];
 
         if (gameList != null && gameList !== "")
-            gameArray = gameList.split(",");
+        {
+            $(gameList.split(",")).each(function () {
+                var theGame = new Game().inflate(this);
+
+                gameArray.push(theGame);
+            });
+        }
 
         return gameArray;
     }
@@ -470,7 +542,7 @@
 
         for (var i = 0; i < gameArray.length; i++)
         {
-            var theGame = new Game().inflate(gameArray[i]);
+            var theGame = gameArray[i];
 
             if (theGame.GameId === effGameId)
             {
@@ -497,7 +569,7 @@
         if (gameIndex >= gameArray.length)
             throw new Error("Cannot Get Current Game - Invalid Game Index");
 
-        return new Game().inflate(gameArray[gameIndex]);
+        return gameArray[gameIndex];
     }
 
     Game.FindGame = function(gameId)
@@ -517,7 +589,7 @@
 
         for (var i = 0; i < gameArray.length; i++)
         {
-            var theGame = new Game().inflate(gameArray[i]);
+            var theGame = gameArray[i];
 
             if (theGame.GameId === effGameId)
                 return theGame;
@@ -535,7 +607,7 @@
 
         if (gameArray.length > 0)
         {
-            var lastGame = new Game().inflate(gameArray[gameArray.length - 1]);
+            var lastGame = gameArray[gameArray.length - 1];
             lastGameId = lastGame.GameId;
         }
 
@@ -591,7 +663,7 @@
 
         for (var i = 0; i < gameArray.length; i++)
         {
-            var theGame = new Game().inflate(gameArray[i]);
+            var theGame = gameArray[i];
 
             if (theGame.GameId === effGameId)
             {
@@ -626,80 +698,25 @@
 
     function BuildLineup()
     {
-        InitLineup();
+        PlayerProfile.InitLineup();
 
-        var keyArray = [];
+        var roster = PlayerProfile.List();
 
-        for (i = 0; localStorage.key(i) != null; i++)
-        {
-            if (localStorage.key(i).substr(0, 6) != "player")
-                continue;
-
-            var serializedPlayerProfile = localStorage.getItem(localStorage.key(i));
-            var playerProfile = new PlayerProfile(serializedPlayerProfile);
-
-            keyArray.push(parseInt(playerProfile.PlayerNumber));
-        }
-
-        keyArray.sort(function(a, b) { return a - b; });
-
-        $(keyArray).each(function() {
-            var playerNumber = this;
-            var infoKey = "player" + playerNumber;
-            var serializedPlayer = localStorage.getItem(infoKey);
-
-
-            var playerProfile = new PlayerProfile(serializedPlayer);
-            var objPlayerInfo = playerProfile.createPlayerDiv();
+        $(roster).each(function () {
+            var objPlayerInfo = this.createPlayerDiv();
 
             $("#divLineup").append(objPlayerInfo);
         });
     }
 
-    function InitLineup()
-    {
-        var playerNumberList = localStorage.getItem("NumberList");
-
-        if (playerNumberList != null)
-            return;
-
-        localStorage.setItem("NumberList", "1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,40,41,42,43,44,45,46,47,48,49");
-
-        var playerNumbers = localStorage.NumberList.split(",");
-
-        $(playerNumbers).each(function() {
-            var playerNumber = this;
-            var infoKey = "player" + playerNumber;
-
-            var playerInfo = localStorage.getItem(infoKey);
-
-            if (playerInfo == null)
-            {
-                var playerName = "Player" + playerNumber;
-
-                var playerProfile = new PlayerProfile(playerNumber, playerName, "");
-
-                localStorage.setItem(infoKey, playerProfile.toString());
-            }
-        });
-    }
-
     function ShowPlayer(divPlayer)
     {
-        var playerInfo = $.trim(divPlayer.text());
-        var playerNumber = $.trim(playerInfo.split(":")[0]);
+        var playerProfile = PlayerProfile.GetPlayerProfileReferencedByDiv(divPlayer);
 
-        var infoKey = "player" + playerNumber;
+        if (playerProfile == null)
+            throw new Error("Cannot Show Player - selected player not in local storage");
 
-        var serializedPlayer = localStorage.getItem(infoKey);
-
-        if (serializedPlayer == null || serializedPlayer == "")
-        {
-            alert("playerInfo not found");
-            return;
-        }
-
-        if ($("#divEntry").is(":visible") && playerNumber == $("#txtPlayerNumber").val())
+        if ($("#divEntry").is(":visible") && playerProfile.PlayerNumber.toString() === $("#txtPlayerNumber").val())
         {
             $("#divEntry").hide();
             return;
@@ -707,16 +724,14 @@
 
         $("#divEntry").hide();
 
-        var playerProfile = new PlayerProfile(serializedPlayer);
-
         $("#txtPlayerNumber").val(playerProfile.PlayerNumber);
         $("#txtPlayerName").val(playerProfile.PlayerName);
 
         $("#rbUnknown").prop("checked", true);
 
-        if (playerProfile.PlayerPosition == "O")
+        if (playerProfile.PlayerPosition === "O")
             $("#rbOffense").prop("checked", true);
-        else if (playerProfile.PlayerPosition == "D")
+        else if (playerProfile.PlayerPosition === "D")
             $("#rbDefense").prop("checked", true);
 
         $("#divEntry").insertAfter(divPlayer);
@@ -1219,7 +1234,7 @@
 
         for (var i = 0; i < gameArray.length; i++)
         {
-            var theGame = new Game().inflate(gameArray[i]);
+            var theGame = gameArray[i];
             var gameId = theGame.GameId;
             var linkAction = "javascript: SetupUpdateGame( " + gameId + " );";
             var divGame = $("<div/>");
