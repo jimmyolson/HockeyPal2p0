@@ -196,7 +196,7 @@
 </style>
 <style type="text/css">
 		/* Details */
-		
+
     #divDetailsContainer table.ScoreEvents {
         margin-top: 10px;
         margin-bottom: 20px;
@@ -209,6 +209,37 @@
         border: solid navy 1px;
         text-align: center;
     }
+</style>
+<style type="text/css">
+    /* Game Listing */
+
+    #divGameListListing div {
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    #divGameListListing div input[type=radio] {
+        margin-right: 10px;
+        vertical-align: middle;
+    }
+
+    #divGameListListing div a {
+        vertical-align: middle;
+        display: inline-block;
+        min-width: 200px;
+        background-color: navy;
+        color: white;
+        border: solid navy 1px;
+        border-radius: 5px;
+        padding: 5px;
+        text-decoration: none;
+    }
+
+    #divGameListListing div a:hover {
+        background-color: white;
+        color: navy;
+    }
+
 </style>
 <script src="jquery-3.1.1.min.js" type="text/javascript"></script>
 <script type="text/javascript">
@@ -423,6 +454,51 @@
         return gameArray;
     }
 
+    Game.SetCurrentGame = function(gameId)
+    {
+        localStorage.currentGameIndex = null;
+
+        if (gameId == null || gameId === "")
+            throw new Error("Cannot Set Current Game - Missing Game Id");
+
+        var effGameId = parseInt(gameId);
+
+        if (isNaN(effGameId))
+            throw new Error("Cannot Set Current Game - Invalid Game Id");
+
+        var gameArray = Game.List();
+
+        for (var i = 0; i < gameArray.length; i++)
+        {
+            var theGame = new Game().inflate(gameArray[i]);
+
+            if (theGame.GameId === effGameId)
+            {
+                localStorage.currentGameIndex = i;
+                return theGame;
+            }
+        }
+
+        throw new Error("Cannot Set Current Game - Not Found");
+    }
+
+    Game.GetCurrentGame = function()
+    {
+        if (localStorage.currentGameIndex == null || localStorage.currentGameIndex === "")
+            return null;
+
+        var gameIndex = parseInt(localStorage.currentGameIndex);
+
+        if (isNaN(gameIndex) || gameIndex < 0)
+            throw new Error("Cannot Get Current Game - Invalid Game Index");
+
+        var gameArray = Game.List();
+
+        if (gameIndex >= gameArray.length)
+            throw new Error("Cannot Get Current Game - Invalid Game Index");
+
+        return new Game().inflate(gameArray[gameIndex]);
+    }
 
     Game.FindGame = function(gameId)
     {
@@ -768,6 +844,12 @@
     {
         $("#divDropdownMenu").hide();
 
+        if (Game.GetCurrentGame() == null)
+        {
+            alert("No Game marked as Current.\n\ncannot navigate to Game");
+            return;
+        }
+
         RefreshRoster();
 
         if ($("#divHockeyGame").is(":visible"))
@@ -878,9 +960,9 @@
 
         var keyArray = [];
 
-        for (i = 0; localStorage.key(i) != null; i++)
+        for (var i = 0; localStorage.key(i) != null; i++)
         {
-            if (localStorage.key(i).substr(0, 6) != "player")
+            if (localStorage.key(i).substr(0, 6) !== "player")
                 continue;
 
             var serializedPlayer = localStorage.getItem(localStorage.key(i));
@@ -1124,6 +1206,9 @@
         $("#divGameInfo").hide();
         $("#divGameInfoAddNewGame").show();
 
+        var currentGame = Game.GetCurrentGame();
+        var effCurrentGameId = currentGame == null ? -1 : currentGame.GameId;
+
         var gameArray = Game.List();
 
         if (gameArray.length === 0)
@@ -1135,18 +1220,31 @@
         for (var i = 0; i < gameArray.length; i++)
         {
             var theGame = new Game().inflate(gameArray[i]);
-            console.log(theGame);
             var gameId = theGame.GameId;
             var linkAction = "javascript: SetupUpdateGame( " + gameId + " );";
             var divGame = $("<div/>");
+            var rbCurrentGame = $("<input type='radio' name='CurrentGame' class='CurrentGame' onclick='SetCurrentGame(this);' />").val(gameId);
             var divLink = $("<a/>").prop("href", linkAction).html(theGame.Title);
 
+            if (gameId === effCurrentGameId)
+                rbCurrentGame.prop("checked", true);
+
+            divGame.append(rbCurrentGame);
             divGame.append(divLink);
 
             $("#divGameListListing").append(divGame);
         }
     }
 
+
+    function SetCurrentGame(rb)
+    {
+        console.log("SetCurrentGame( %s )", $(rb).val());
+
+        var gameId = parseInt($(rb).val());
+
+        Game.SetCurrentGame(gameId);
+    }
 
     function SetupAddNewGame()
     {
@@ -1188,6 +1286,13 @@
 
         Game.UpdateGameDescription($("#GameId").val(), gameDescription);
 
+        GenerateGameListing();
+    }
+
+    function CancelUpdateGame()
+    {
+        $("#GameDescription").val("");
+        $("#GameId").val("");
         GenerateGameListing();
     }
 
@@ -1326,6 +1431,8 @@
                             </div>
                         </div>
                         <input type="button" id="btnUpdateGame" value="Update/Add" onclick="UpdateGame();"/>
+                        &nbsp;&nbsp;
+                        <input type="button" id="btnCancelUpdateGame" value="Cancel" onclick="CancelUpdateGame();" />
                     </div>
                     <div id="divGameInfoAddNewGame">
                         <hr/>
