@@ -265,7 +265,7 @@
             if (playerNumber == null)
                 throw new Error("Cannot initialize PlayerProfile - missing Player Number");
 
-            if (playerName == null || playerName == "")
+            if (playerName == null || playerName === "")
                 throw new Error("Cannot initialize PlayerProfile - missing Player Name");
 
             if (playerPosition != null)
@@ -306,6 +306,18 @@
         this.label = function()
         {
             return this.PlayerNumber + ": " + this.PlayerName + " (" + this.PlayerPosition + ")";
+        }
+
+        this.keyName = function()
+        {
+            return "player" + this.PlayerNumber.toString();
+        }
+
+        this.save = function()
+        {
+            localStorage.setItem(this.keyName(), this);
+
+            return this;
         }
 
         this.createPlayerDiv = function()
@@ -389,7 +401,6 @@
 
         return playerList;
     }
-
 
     function ScoreEvent(plusMinus, arrayPlayerNumbers)
     {
@@ -760,15 +771,13 @@
                     : ""
             );
 
-        var infoKey = "player" + playerNumber;
-
         var playerProfile = new PlayerProfile(nPlayerNumber, playerName, playerPosition);
 
-        localStorage.setItem(infoKey, playerProfile.toString());
+        playerProfile.save();
 
         var divs = $("div.PlayerEntry")
             .filter(function() {
-                return parseInt($.trim($(this).text()).split(":")[0]) >= nPlayerNumber;
+                return PlayerProfile.GetPlayerNumberFromPlayerDiv($(this)) >= nPlayerNumber;
             });
 
         if (divs.length === 0)
@@ -785,7 +794,7 @@
 
         var div = $(divs[0]);
 
-        if ($.trim(div.text()).split(":")[0] === playerNumber)
+        if (PlayerProfile.GetPlayerNumberFromPlayerDiv(div) === nPlayerNumber)
         {
             div.text(playerProfile.label());
             return;
@@ -824,10 +833,8 @@
 
         var gamePlayers = localStorage.gamePlayers;
 
-        if (gamePlayers != null && gamePlayers != "")
+        if (gamePlayers != null && gamePlayers !== "")
         {
-            var gamePlayersArray = gamePlayers.split(",");
-
             if (gamePlayers.indexOf(playerNumber) >= 0)
             {
                 alert("Player cannot be deleted - currently 'On the Ice'");
@@ -840,7 +847,7 @@
 
         var div = $("div.PlayerEntry")
             .filter(function() {
-                return parseInt($.trim($(this).text()).split(":")[0]) === nPlayerNumber;
+                return PlayerProfile.GetPlayerNumberFromPlayerDiv($(this)) === nPlayerNumber;
             });
 
         if (div.length === 1)
