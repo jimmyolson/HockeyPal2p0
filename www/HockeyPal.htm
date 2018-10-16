@@ -320,6 +320,15 @@
             return this;
         }
 
+        this.delete = function()
+        {
+            localStorage.removeItem(this.keyName());
+
+            this.PlayerNumber = null;
+            this.PlayerName = null;
+            this.PlayerPosition = null;
+        }
+
         this.createPlayerDiv = function()
         {
             var newDiv = $("<div/>").text(this.label()).addClass("PlayerEntry");
@@ -400,6 +409,31 @@
         playerList.sort(function(a, b) { return a.PlayerNumber - b.PlayerNumber });
 
         return playerList;
+    }
+
+    PlayerProfile.KeyName = function(playerNumber)
+    {
+        if (playerNumber == null || playerNumber === "")
+            throw new Error("Cannot Get Player Key Name - Missing Player Number");
+
+        var effPlayerNumber = parseInt(playerNumber);
+
+        if (isNaN(effPlayerNumber))
+            throw new Error("Cannot Get Player Key Name - Invalid Player Number");
+
+        return "player" + effPlayerNumber.toString();
+    }
+
+    PlayerProfile.GetPlayer = function(playerNumber)
+    {
+        var playerKey = PlayerProfile.KeyName(playerNumber);
+
+        var serializedPlayerProfile = localStorage.getItem(playerKey);
+
+        if (serializedPlayerProfile == null || serializedPlayerProfile === "")
+            return null;
+
+        return new PlayerProfile().inflate(serializedPlayerProfile);
     }
 
     function ScoreEvent(plusMinus, arrayPlayerNumbers)
@@ -829,7 +863,6 @@
     {
         var playerNumber = $("#txtPlayerNumber").val();
         var nPlayerNumber = parseInt(playerNumber);
-        var infoKey = "player" + playerNumber;
 
         var gamePlayers = localStorage.gamePlayers;
 
@@ -842,8 +875,10 @@
             }
         }
 
+        var player = PlayerProfile.GetPlayer(nPlayerNumber);
 
-        localStorage.removeItem(infoKey);
+        if (player != null)
+            player.delete();
 
         var div = $("div.PlayerEntry")
             .filter(function() {
