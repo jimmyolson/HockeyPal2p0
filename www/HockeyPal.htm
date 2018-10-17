@@ -157,6 +157,28 @@
 
     div.PlayerPositionType label { padding-left: 10px; }
 
+    table.PlayerFields td.PlayerNumber {
+        width: 20%;
+        min-width: 40px;
+        max-width: 60px;
+        padding-right: 5px;
+    }
+
+    table.PlayerFields td.PlayerNumber input[type=text] {
+        min-width: 35px;
+        max-width: 50px;
+        width: 75%;
+    }
+
+    table.PlayerFields td.PlayerName {
+        width: 80%;
+    }
+
+    table.PlayerFields td.PlayerName input[type=text] {
+        min-width: 150px;
+        width: 85%;
+    }
+
 </style>
 <style type="text/css">
 		/* Game Styles */
@@ -1387,20 +1409,20 @@
         </div>
         <div id="divEntry" style="display: none;">
             <div class="PlayerDisplayEntry">
-                <div class="PlayerDisplayPrompt">
-                    Player #
-                </div>
-                <div class="PlayerDisplayValue">
-                    <input type="text" id="txtPlayerNumber" style="width: 50px;" readonly="readonly"/>
-                </div>
-            </div>
-            <div class="PlayerDisplayEntry">
-                <div class="PlayerDisplayPrompt">
-                    Name
-                </div>
-                <div class="PlayerDisplayValue">
-                    <input type="text" id="txtPlayerName" style="width: 150px;"/>
-                </div>
+                <table class="PlayerFields">
+                    <tr>
+                        <th>#</th>
+                        <th>Name</th>
+                    </tr>
+                    <tr>
+                        <td class="PlayerNumber">
+                            <input type="text" id="txtPlayerNumber" readonly="readonly"/>
+                        </td>
+                        <td class="PlayerName">
+                            <input type="text" id="txtPlayerName" />
+                        </td>
+                    </tr>
+                </table>
             </div>
             <div class="PlayerDisplayEntry">
                 <div class="PlayerDisplayPrompt">
