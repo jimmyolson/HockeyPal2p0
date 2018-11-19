@@ -1415,22 +1415,15 @@
                 </table>
             </div>
             <div class="PlayerDisplayEntry">
-                <div class="PlayerDisplayPrompt">
-                    Position
-                </div>
                 <div class="PlayerDisplayValue">
                     <div class="PlayerPositionType">
-                        <input type="radio" name="PlayerPosition" id="rbOffense" value="O"/><label for="rbOffense">Offense</label>
-                    </div>
-                    <div class="PlayerPositionType">
-                        <input type="radio" name="PlayerPosition" id="rbDefense" value="D"/><label for="rbDefense">Defense</label><br/>
-                    </div>
-                    <div class="PlayerPositionType">
-                        <input type="radio" name="PlayerPosition" id="rbUnknown" value=""/><label for="rbUnknown">Both/Unknown</label>
+                        <label for="rbOffense">O</label><input type="radio" name="PlayerPosition" id="rbOffense" value="O"/>
+                        <label for="rbDefense">D</label><input type="radio" name="PlayerPosition" id="rbDefense" value="D" />
+                        <label for="rbUnknown">Both/???</label><input type="radio" name="PlayerPosition" id="rbUnknown" value="" />
                     </div>
                 </div>
             </div>
-            <div class="PlayerDisplayEntry">
+            <div class="PlayerDisplayEntry" style="margin-top: 10px;">
                 <input type="button" id="btnUpdate" value="Update" onclick="UpdatePlayer();"/>
                 <input type="button" id="btnClose" value="Close" onclick="CloseEntry();"/>
                 <input type="button" id="btnDelete" value="Delete" onclick="DeleteEntry();"/>
