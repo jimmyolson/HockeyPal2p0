@@ -864,11 +864,12 @@
     function AddNewPlayer()
     {
         $("#divEntry").hide();
-        $("#divEntry").insertBefore("#divLineup");
-        $("#txtPlayerNumber").prop("readonly", false).focus().val("");
+        $("#divEntry").insertAfter("#divLineup div:last");
+        $("#txtPlayerNumber").prop("readonly", false).val("");
         $("#txtPlayerName").val("");
         $("#rbUnknown").prop("checked", true);
         $("#divEntry").show();
+        $("#txtPlayerNumber").focus();
     }
 
     function DeleteEntry()
@@ -1394,7 +1395,7 @@
             </div>
             <div class="Footer">
                 <hr/>
-                <input type="button" id="btnAddPlayer" onclick="AddNewPlayer" value="Add Player"/>
+                <input type="button" id="btnAddPlayer" onclick="AddNewPlayer()" value="Add Player"/>
             </div>
         </div>
         <div id="divEntry" style="display: none;">
